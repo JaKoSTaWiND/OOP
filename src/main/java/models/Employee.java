@@ -1,4 +1,4 @@
-package main.models;
+package models;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -65,6 +65,10 @@ public class Employee {
         this.isFullTime = isFullTime;
     }
 
+    public void setStartedAt(LocalDate startedAt) {
+        this.startedAt = startedAt;
+    }
+
 
 
     // --- CALCULATE MOUTHLY SALARY ---
@@ -98,5 +102,7 @@ public class Employee {
                 "Started at:" + startedAt +
                 "}";
     }
+
+    
 
 }

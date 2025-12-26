@@ -1,11 +1,10 @@
-package main.app;
-
-import main.models.Customer;
-import main.models.Employee;
-import main.models.Product;
+package app;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import models.Customer;
+import models.Employee;
+import models.Product;
 
 public class Main {
 
