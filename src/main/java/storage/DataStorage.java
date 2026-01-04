@@ -5,8 +5,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Cashier; 
 import models.Customer;
 import models.Employee;
+import models.FreshProduct;
+import models.FrozenProduct;
+import models.Manager;
 import models.Product;
 
 public final class DataStorage {
@@ -20,37 +24,40 @@ public final class DataStorage {
 
     public void initData() {
         // --- PRODUCTS ---
-        products.add(new Product(1, "Laptop1", new BigDecimal("2990.90"), false, "Laptops"));
-        products.add(new Product(2, "Laptop2", new BigDecimal("1990.90"), true, "Laptops"));
-        products.add(new Product(3, "Laptop3", new BigDecimal("2590.90"), false, "Laptops"));
+        // base class
+        products.add(new Product(1, "Olive Oil", new BigDecimal("12.50"), false, "Grocery"));
+        products.add(new Product(2, "Pasta Barilla", new BigDecimal("2.10"), true, "Grocery"));
+        
+        // FreshProduct
+        products.add(new FreshProduct(3, "Red Apples", new BigDecimal("3.20"), "Fruits", 1.5));
+        products.add(new FreshProduct(4, "Beef Steak", new BigDecimal("15.90"), "Meat", 0.8));
 
-        products.add(new Product(4, "Phone1", new BigDecimal("790.90"), true, "Phones"));
-        products.add(new Product(5, "Phone2", new BigDecimal("990.90"), false, "Phones"));
-        products.add(new Product(6, "Phone3", new BigDecimal("1290.90"), false, "Phones"));
+        // FrozenProduct
+        products.add(new FrozenProduct(5, "Pizza Quattro", new BigDecimal("6.50"), "Frozen Food", -18));
+        products.add(new FrozenProduct(6, "Frozen Berries", new BigDecimal("4.00"), "Desserts", -20));
 
         // --- EMPLOYEES ---
-        employees.add(new Employee(1, "First Employee", new BigDecimal("15"), "Seller", true, LocalDate.of(2025, 12, 12)));
-        employees.add(new Employee(2, "Second Employee", new BigDecimal("25"), "Seller", true, LocalDate.of(2023, 7, 15)));
-        employees.add(new Employee(3, "Third Employee", new BigDecimal("20"), "Loader", true, LocalDate.of(2020, 1, 9)));
-        employees.add(new Employee(4, "Fourth Employee", new BigDecimal("70"), "Administrator", true, LocalDate.of(2020, 1, 9)));
+        // Manager
+        employees.add(new Manager(1, "Alex Johnson", new BigDecimal("50.00"), LocalDate.of(2022, 3, 1), 5));
+        
+        // Cashier
+        employees.add(new Cashier(2, "Maria Garcia", new BigDecimal("18.50"), LocalDate.of(2024, 1, 15), 1));
+        employees.add(new Cashier(3, "Ivan Petrov", new BigDecimal("18.50"), LocalDate.of(2024, 6, 10), 2));
+        
+        // base class
+        employees.add(new Employee(4, "John Smith", new BigDecimal("15.00"), "Loader", true, LocalDate.of(2023, 11, 20)));
 
         // --- CUSTOMERS ---
-        customers.add(new Customer(1, "First Customer", "87777777777", 1000, true));
-        customers.add(new Customer(2, "Second Customer", "81111111111", 100, false));
-        customers.add(new Customer(3, "Third Customer", "82222222222", 700, false));
-        customers.add(new Customer(4, "Fourth Customer", "83333333333", 0, false));
+        customers.add(new Customer(1, "Alice Cooper", "87771112233", 150, true));
+        customers.add(new Customer(2, "Bob Marley", "87015554433", 40, false));
+        customers.add(new Customer(3, "Charlie Brown", "87479998877", 0, true));
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
+    public List<Product> getProducts() { return products; }
+    public List<Employee> getEmployees() { return employees; }
+    public List<Customer> getCustomers() { return customers; }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public List<Customer> getCustomers() {
-        return customers;
-    }
-
+    public void addProduct(Product product) { this.products.add(product); }
+    public void addEmployee(Employee employee) { this.employees.add(employee); }
+    public void addCustomer(Customer customer) { this.customers.add(customer); }
 }

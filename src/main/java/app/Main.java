@@ -1,5 +1,6 @@
 package app;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
@@ -7,6 +8,7 @@ import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.ansi;
 import org.fusesource.jansi.AnsiConsole;
 
+import models.Customer;
 import models.Employee;
 import models.Product;
 import picocli.CommandLine;
@@ -60,6 +62,7 @@ public class Main implements Callable<Integer> {
                             1. View data (products)
                             2. Apply duscount
                             3. Calculate price with VAT (НДС)
+                            4. Add Product
                             """);
 
                     String subChoice = scanner.nextLine(); 
@@ -111,6 +114,20 @@ public class Main implements Callable<Integer> {
                                     System.out.println(ansi().fg(Ansi.Color.RED).a("Product not found!").reset());
                                 }
                             }
+                            case "4" -> {
+                                System.out.println(ansi().fg(Ansi.Color.YELLOW).a("--- Add New Product ---").reset());
+                                System.out.print("Enter ID: ");
+                                int id = Integer.parseInt(scanner.nextLine());
+                                System.out.print("Enter Name: ");
+                                String name = scanner.nextLine();
+                                System.out.print("Enter Price: ");
+                                BigDecimal price = new BigDecimal(scanner.nextLine());
+                                System.out.print("Enter Category: ");
+                                String cat = scanner.nextLine();
+
+                                storage.addProduct(new Product(id, name, price, false, cat));
+                                System.out.println(ansi().fg(Ansi.Color.GREEN).a("Product added!").reset());
+                            }
                         }
                         System.out.print(ansi().reset());
                         System.out.println(ansi().fg(Ansi.Color.GREEN).bold().a("Press Enter to return to main menu..."));
@@ -125,6 +142,7 @@ public class Main implements Callable<Integer> {
                             1. View data (employees)
                             2. Calculate monthly salary
                             3. Calculate experience
+                            4. Add Employee
                             """);
 
                     String subChoice = scanner.nextLine(); 
@@ -171,6 +189,20 @@ public class Main implements Callable<Integer> {
                                 System.out.println(ansi().fg(Ansi.Color.RED).a("Employee not found!").reset());
                             }
                         }
+                        case "4" -> {
+                            System.out.println(ansi().fg(Ansi.Color.YELLOW).a("--- Add New Employee ---").reset());
+                            System.out.print("Enter ID: ");
+                            int id = Integer.parseInt(scanner.nextLine());
+                            System.out.print("Full Name: ");
+                            String name = scanner.nextLine();
+                            System.out.print("Position: ");
+                            String pos = scanner.nextLine();
+                            System.out.print("Hourly Rate: ");
+                            BigDecimal rate = new BigDecimal(scanner.nextLine());
+
+                            storage.addEmployee(new Employee(id, name, rate, pos, true, java.time.LocalDate.now()));
+                            System.out.println(ansi().fg(Ansi.Color.GREEN).a("Employee hired!").reset());
+                        }
                     }
                     System.out.print(ansi().reset());
                     System.out.println(ansi().fg(Ansi.Color.GREEN).bold().a("Press Enter to return to main menu..."));
@@ -182,8 +214,9 @@ public class Main implements Callable<Integer> {
                     System.out.println(ansi().fg(Ansi.Color.CYAN).bold().a("=== SELECT OPTION ===").reset());
                     System.out.println("""
                             1. View data (customers)
-                            2. Apply duscount
-                            3. Calculate price with VAT (НДС)
+                            2. Add loyalty points
+                            3. Points to discount
+                            4. Add Customer
                             """);
 
                     String subChoice = scanner.nextLine(); 
@@ -236,6 +269,18 @@ public class Main implements Callable<Integer> {
                             } else {
                                 System.out.println(ansi().fg(Ansi.Color.RED).a("Customer not found!").reset());
                             }
+                        }
+                        case "4" -> {
+                            System.out.println(ansi().fg(Ansi.Color.YELLOW).a("--- Add New Customer ---").reset());
+                            System.out.print("Enter ID: ");
+                            int id = Integer.parseInt(scanner.nextLine());
+                            System.out.print("Name: ");
+                            String name = scanner.nextLine();
+                            System.out.print("Phone: ");
+                            String phone = scanner.nextLine();
+
+                            storage.addCustomer(new Customer(id, name, phone, 0, false));
+                            System.out.println(ansi().fg(Ansi.Color.GREEN).a("Customer registered!").reset());
                         }
                     }
                     System.out.println("\nPress Enter to return to main menu...");
