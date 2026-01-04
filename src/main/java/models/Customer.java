@@ -24,6 +24,7 @@ public class Customer {
     }
 
     // --- GETTERS  ---
+    public int getId() { return customerId; }
     public String getFullName() { return fullName; }
     public String getPhone() { return phone; }
     public int getLoyaltyPoints() { return loyaltyPoints; }

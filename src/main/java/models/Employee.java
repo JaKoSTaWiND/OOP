@@ -5,6 +5,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import org.fusesource.jansi.Ansi;
+import static org.fusesource.jansi.Ansi.ansi;
+
 public class Employee {
     private int employeeId;
     private String fullName;
@@ -30,6 +33,7 @@ public class Employee {
     }
 
     // --- GETTERS ---
+    public int getId() { return employeeId; }
     public String getFullName() { return fullName; }
     public BigDecimal getHourlyRate() { return hourlyRate; }
     public String getPosition() { return position; }
@@ -79,7 +83,7 @@ public class Employee {
         BigDecimal baseSalary = hourlyRate.multiply(hours);
         BigDecimal resultSalary = baseSalary.add(bonus).setScale(2, RoundingMode.HALF_UP);
 
-        System.out.println("Result salary: " + resultSalary);
+        System.out.println(ansi().fg(Ansi.Color.GREEN).a("Result: " + "$" + resultSalary));
         return resultSalary;
     }
 
@@ -87,7 +91,6 @@ public class Employee {
     public long calculateExperience() {
         LocalDate now = LocalDate.now();
         long years = ChronoUnit.YEARS.between(this.startedAt, now);
-        System.out.println("Employee experience: " + years + " " + "years");
         return years;
     }
 

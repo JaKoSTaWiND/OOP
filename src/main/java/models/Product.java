@@ -27,6 +27,7 @@ public class Product {
 
 
     // --- GETTERS  ---
+    public int getId() { return productId; }
     public BigDecimal getUnitPrice() { return unitPrice; }
     public String getName() { return name; }
     public String getCategory() { return category; }
@@ -74,13 +75,13 @@ public class Product {
         }
     }
 
-    // --- CALCULATE PRICE WITH VAT (НДС) ---
-    public void calculatePriceWithVAT(double vatRate) {
-        BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
-        this.unitPrice = unitPrice.multiply(vatFactor);
+        // --- CALCULATE PRICE WITH VAT (НДС) ---
+        public void calculatePriceWithVAT(double vatRate) {
+            BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
+            this.unitPrice = unitPrice.multiply(vatFactor);
 
-        System.out.println("Current unit price: " + this.unitPrice);
-    }
+            System.out.println("Current unit price: " + this.unitPrice);
+        }
 
     @Override
     public String toString() {
