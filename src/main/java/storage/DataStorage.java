@@ -5,13 +5,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Cashier; 
 import models.Customer;
-import models.Employee;
-import models.FreshProduct;
-import models.FrozenProduct;
-import models.Manager;
-import models.Product;
+import models.employeeModels.Cashier;
+import models.employeeModels.Employee;
+import models.employeeModels.Manager;
+import models.productModels.FreshProduct;
+import models.productModels.FrozenProduct;
+import models.productModels.Product;
+import models.productModels.SimpleProduct;
 
 public final class DataStorage {
     private final List<Product> products = new ArrayList<>();
@@ -24,9 +25,9 @@ public final class DataStorage {
 
     public void initData() {
         // --- PRODUCTS ---
-        // base class
-        products.add(new Product(1, "Olive Oil", new BigDecimal("12.50"), false, "Grocery"));
-        products.add(new Product(2, "Pasta Barilla", new BigDecimal("2.10"), true, "Grocery"));
+        // SimpleProduct
+        products.add(new SimpleProduct(1, "Olive Oil", new BigDecimal("12.50"), false, "Grocery"));
+        products.add(new SimpleProduct(2, "Pasta Barilla", new BigDecimal("2.10"), true, "Grocery"));
         
         // FreshProduct
         products.add(new FreshProduct(3, "Red Apples", new BigDecimal("3.20"), "Fruits", 1.5));
@@ -36,8 +37,8 @@ public final class DataStorage {
         products.add(new FrozenProduct(5, "Pizza Quattro", new BigDecimal("6.50"), -18, "Frozen Food"));
         products.add(new FrozenProduct(6, "Frozen Berries", new BigDecimal("4.00"), -20, "Desserts"));
 
+
         // --- EMPLOYEES ---
-        
         // Manager
         employees.add(new Manager(1, "Alex Johnson", new BigDecimal("50.00"), LocalDate.of(2022, 3, 1), 5));
         
@@ -45,8 +46,6 @@ public final class DataStorage {
         employees.add(new Cashier(2, "Maria Garcia", new BigDecimal("18.50"), LocalDate.of(2024, 1, 15), 1));
         employees.add(new Cashier(3, "Ivan Petrov", new BigDecimal("18.50"), LocalDate.of(2024, 6, 10), 2));
         
-        // base class
-        employees.add(new Employee(4, "John Smith", new BigDecimal("15.00"), "Loader", true, LocalDate.of(2023, 11, 20)));
 
         // --- CUSTOMERS ---
         customers.add(new Customer(1, "Alice Cooper", "87771112233", 150, true));

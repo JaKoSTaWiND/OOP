@@ -46,7 +46,7 @@ public class FreshProductMenu extends BaseMenu implements Menu {
                 switch (choice) {
                     case "1" -> {
                         System.out.println(ansi().reset());
-                        TableRenderer.printFreshProductTable(freshProductService.getAllFreshProducts());
+                        TableRenderer.printProductTable(freshProductService.getAllFreshProducts());
                     }
                     case "2" -> {
                         int id = readInt("Enter ID: ");

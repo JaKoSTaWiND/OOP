@@ -1,4 +1,4 @@
-package models;
+package models.productModels;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -66,12 +66,14 @@ abstract public class Product {
     /* --- ABSTRACT METHODS --- */
     public abstract String getSpecificDetails(); // FreshProduct -> weight, isBulk; FrozenProduct -> storageTemp, isDeepFreeze
     public abstract BigDecimal getTotalPrice(); // FreshProduct -> unitPrice * weight; FrozenProduct -> unitPrice
+    public String getWeight() { return "-"; }
+    public String getTemp() { return "-"; }
 
     // ---SET A DISCOUNT ---
     public void applyDiscount(double percentage) {
         if (percentage > 0 && percentage <= 1) {
             BigDecimal discountFactor = new BigDecimal(String.valueOf(1.0 - percentage));
-            this.unitPrice = this.unitPrice.multiply(discountFactor);
+            this.unitPrice = this.unitPrice.multiply(discountFactor).setScale(2, RoundingMode.HALF_UP);
             this.isDiscounted = true;
 
             System.out.println("Current unit price: " + this.unitPrice);
@@ -82,7 +84,7 @@ abstract public class Product {
     // --- CALCULATE PRICE WITH VAT (НДС) ---
     public void calculatePriceWithVAT(double vatRate) {
         BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
-        this.unitPrice = unitPrice.multiply(vatFactor);
+        this.unitPrice = unitPrice.multiply(vatFactor).setScale(2, RoundingMode.HALF_UP);
 
         System.out.println("Current unit price: " + this.unitPrice);
     }

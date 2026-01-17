@@ -1,4 +1,4 @@
-package models;
+package models.productModels;
 
 import java.math.BigDecimal;
 
@@ -26,7 +26,9 @@ public class FrozenProduct extends Product {
         return this.unitPrice;
     }
 
-    public int getStorageTemp() { return storageTemp; }
+    @Override
+    public String getTemp() { return this.storageTemp + " °C"; }
+
     public void setStorageTemp(int temp) { this.storageTemp = temp; }
 
     // --- DEEP FREEZE ---

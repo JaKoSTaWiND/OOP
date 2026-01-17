@@ -4,13 +4,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import models.Product;
+import models.productModels.Product;
+import models.productModels.SimpleProduct;
 import storage.DataStorage;
 
-public class ProductService {
+public class SimpleProductService {
     private final DataStorage storage;
 
-    public ProductService(DataStorage storage) {
+    public SimpleProductService(DataStorage storage) {
         this.storage = storage;
     }
 
@@ -34,7 +35,7 @@ public class ProductService {
     // --- ADD PRODUCT ---
     public void addProduct(int productId, String name, BigDecimal unitPrice, boolean isDiscounted, String category) {
         if (!isIdTaken(productId)) { 
-            Product newProduct = new Product(productId, name, unitPrice, isDiscounted, category);
+            Product newProduct = new SimpleProduct(productId, name, unitPrice, isDiscounted, category);
             storage.addProduct(newProduct);
             System.out.println("Product '" + name + "' added successfully.");
         } else {

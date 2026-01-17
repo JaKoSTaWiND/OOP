@@ -1,4 +1,4 @@
-package models;
+package models.employeeModels;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.ansi;
 
-public class Employee {
+ abstract public class Employee {
     private int employeeId;
     private String fullName;
     private BigDecimal hourlyRate;

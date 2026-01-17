@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import exceptions.InvalidInputException;
-import models.FreshProduct;
+import models.productModels.FreshProduct;
 import storage.DataStorage;
 
 public class FreshProductService {

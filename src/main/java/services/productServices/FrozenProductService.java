@@ -2,7 +2,7 @@ package services.productServices;
 
 import java.util.List;
 
-import models.FrozenProduct;
+import models.productModels.FrozenProduct;
 import storage.DataStorage;
 
 public class FrozenProductService {

@@ -44,7 +44,7 @@ public class FrozenProductMenu extends BaseMenu implements Menu {
                 switch (choice) {
                     case "1" -> {
                         System.out.println(ansi().reset());
-                        TableRenderer.printFrozenProductTable(frozenProductService.getAllFrozenProducts());
+                        TableRenderer.printProductTable(frozenProductService.getAllFrozenProducts());
                     }
                     case "2" -> {
                         int id = readInt("Enter ID: ");

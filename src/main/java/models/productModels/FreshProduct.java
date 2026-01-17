@@ -1,4 +1,4 @@
-package models;
+package models.productModels;
 
 import java.math.BigDecimal;
 
@@ -26,7 +26,9 @@ public class FreshProduct extends Product {
         return this.unitPrice.multiply(BigDecimal.valueOf(weight));
     }
 
-    public double getWeight() { return weight; }
+    @Override
+    public String getWeight() { return this.weight + " kg"; }
+
     public void setWeight(double weight) { if(weight > 0) this.weight = weight; }
 
     // --- CALCULATE BULK ( > 5 kg )
