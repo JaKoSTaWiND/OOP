@@ -61,7 +61,7 @@ public class Customer {
 
     // --- ADD LOYALTY POINTS ---
     public void addLoyaltyPoints(double amount) {
-        int pointsToAdd = (int) (amount / 100.0);
+        int pointsToAdd = (int) (amount);
         this.loyaltyPoints = this.loyaltyPoints + pointsToAdd;
         System.out.println("Current loyalty points: " + this.loyaltyPoints);
     }

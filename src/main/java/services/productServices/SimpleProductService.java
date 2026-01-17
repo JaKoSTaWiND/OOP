@@ -37,7 +37,6 @@ public class SimpleProductService {
         if (!isIdTaken(productId)) { 
             Product newProduct = new SimpleProduct(productId, name, unitPrice, isDiscounted, category);
             storage.addProduct(newProduct);
-            System.out.println("Product '" + name + "' added successfully.");
         } else {
             System.out.println("Product with ID " + productId + " already exists.");
         }

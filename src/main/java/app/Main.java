@@ -3,6 +3,7 @@ package app;
 import java.util.Scanner;
 
 import interfaces.Menu;
+import services.customerServices.SimpleCustomerService;
 import services.employeeServices.CashierEmployeeService;
 import services.employeeServices.ManagerEmployeeService;
 import services.employeeServices.SimpleEmployeeService;
@@ -11,6 +12,7 @@ import services.productServices.FrozenProductService;
 import services.productServices.SimpleProductService;
 import storage.DataStorage;
 import ui.menus.StoreMenu;
+import ui.menus.customerMenu.SimpleCustomerMenu;
 import ui.menus.employeeMenus.CashierEmployeeMenu;
 import ui.menus.employeeMenus.ManagerEmployeeMenu;
 import ui.menus.employeeMenus.SimpleEmployeeMenu;
@@ -32,6 +34,8 @@ public class Main {
         ManagerEmployeeService managerEmployeeService = new ManagerEmployeeService(storage); // Managers
         CashierEmployeeService cashierEmployeeService = new CashierEmployeeService(storage); // Cashiers
 
+        SimpleCustomerService simpleCustomerService = new SimpleCustomerService(storage); // Customers
+
 
         // --- MENUS ( !!! must initialize from bottom to top by menu hierarchy !!!) ---
         Menu freshProductMenu = new FreshProductMenu(freshService, scanner); // Fresh Products
@@ -43,9 +47,10 @@ public class Main {
 
         Menu simpleProductMenu = new SimpleProductMenu(simpleProductService, freshProductMenu, frozenProductMenu, scanner); // Products
         Menu simpleEmployeeMenu = new SimpleEmployeeMenu(simpleEmployeeService, managerEmployeeMenu, cashierEmployeeMenu,scanner); // Employees
+        Menu simpleCustomerMenu = new SimpleCustomerMenu(simpleCustomerService, scanner); // Customers
 
         // --- LAUNCH ---
-        Menu mainMenu = new StoreMenu(simpleProductMenu, simpleEmployeeMenu, scanner);
+        Menu mainMenu = new StoreMenu(simpleProductMenu, simpleEmployeeMenu, simpleCustomerMenu,scanner);
         mainMenu.run();
     }
 }

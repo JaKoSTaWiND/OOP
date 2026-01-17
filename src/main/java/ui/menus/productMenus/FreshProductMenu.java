@@ -61,11 +61,8 @@ public class FreshProductMenu extends BaseMenu implements Menu {
                 }
             }
 
-            catch (EmptyDataException e) {
-                System.out.println(ansi().fgRed().a("Error: " + e.getMessage()).reset());
-            }
-            catch (InvalidInputException e) {
-                System.out.println(ansi().fgRed().a("Invalid input: " + e.getMessage()).reset());
+            catch (EmptyDataException | InvalidInputException e) {
+                System.out.println(ansi().fg(Ansi.Color.RED).a(e.getMessage()).reset());
             }
         }
     }

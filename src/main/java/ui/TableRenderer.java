@@ -38,7 +38,14 @@ public class TableRenderer {
     }
 
     at.getRenderer().setCWC(new CWC_FixedWidth()
-        .add(5).add(12).add(20).add(12).add(10).add(10).add(12).add(15)
+        .add(5) // ID
+        .add(12) // TYPE
+        .add(20) // NAME
+        .add(12) // UNIT PRICE
+        .add(10) // WEIGHT
+        .add(10) // TEMP
+        .add(12) // TOTAL
+        .add(15) // CATEGORY
     );
 
     at.setTextAlignment(TextAlignment.CENTER);
@@ -57,12 +64,23 @@ public class TableRenderer {
         at.addRule();
 
         for (Employee e : employees) {
-            at.addRow(e.getId(), e.getFullName(), e.getPosition(), e.getHourlyRate() + " USD", e.getIsFullTime(), e.getStartedAt());
+            at.addRow(
+                e.getId(),
+                e.getFullName(), 
+                e.getPosition(), 
+                e.getHourlyRate() + " USD", 
+                e.getIsFullTime(), 
+                e.getStartedAt());
             at.addRule();
         }
 
         at.getRenderer().setCWC(new CWC_FixedWidth()
-        .add(5).add(20).add(20).add(12).add(15).add(15)
+        .add(5) // ID
+        .add(20) // FULL NAME
+        .add(20) // POSITION
+        .add(12) // HOURLY RATE
+        .add(15) // IS FULL TIME
+        .add(15) // GET STARTED AT
         );
 
         at.setTextAlignment(TextAlignment.CENTER);
@@ -81,9 +99,22 @@ public class TableRenderer {
         at.addRule();
 
         for (Customer c : customers) {
-            at.addRow(c.getId(), c.getFullName(), c.getPhone(), c.getLoyaltyPoints(), c.isVip());
+            at.addRow(
+                c.getId(), 
+                c.getFullName(), 
+                c.getPhone(), 
+                c.getLoyaltyPoints(), 
+                c.isVip());
             at.addRule();
         }
+
+        at.getRenderer().setCWC(new CWC_FixedWidth()
+        .add(5) // ID
+        .add(20) // FULL NAME
+        .add(20) // PHONE
+        .add(5) // LOYALTY POINTS
+        .add(15) // IS VIP
+        );
 
         at.setTextAlignment(TextAlignment.CENTER);
         System.out.println(at.render());

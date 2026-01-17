@@ -2,16 +2,21 @@ package ui.menus;
 
 import java.util.Scanner;
 
+import org.fusesource.jansi.Ansi;
+import static org.fusesource.jansi.Ansi.ansi;
+
 import interfaces.Menu; 
 
 public class StoreMenu extends BaseMenu implements Menu {
     private final Menu productMenu; 
     private final Menu employeeMenu;
+    private final Menu customerMenu;
 
-    public StoreMenu(Menu productMenu, Menu employeeMenu, Scanner scanner) {
+    public StoreMenu(Menu productMenu, Menu employeeMenu, Menu customerMenu, Scanner scanner) {
         super(scanner);
         this.productMenu = productMenu;
         this.employeeMenu = employeeMenu;
+        this.customerMenu = customerMenu;
     }
 
     @Override
@@ -35,12 +40,12 @@ public class StoreMenu extends BaseMenu implements Menu {
                 switch (choice) {
                     case "1" -> productMenu.run(); // Proucts
                     case "2" -> employeeMenu.run(); // Employees
-                    // case "3" -> customerMenu.run(); // Customers
+                    case "3" -> customerMenu.run(); // Customers
                     case "0" -> exit = true;
                     default -> System.out.println("Invalid choice.");
                 }
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                System.out.println(ansi().fg(Ansi.Color.RED).a(e.getMessage()).reset());
             }
         }
     }

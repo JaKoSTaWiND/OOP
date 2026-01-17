@@ -3,6 +3,7 @@ package ui.menus.productMenus;
 import java.math.BigDecimal;
 import java.util.Scanner;
 
+import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.ansi;
 
 import exceptions.EmptyDataException;
@@ -49,9 +50,15 @@ public class SimpleProductMenu extends BaseMenu implements Menu {
             try {
                 switch (choice) {
                     case "1" -> TableRenderer.printProductTable(simpleProductService.getAllProducts());
-                    case "2" -> handleAddSimple();
+                    case "2" -> {
+                        int id = readInt("ID: ");
+                        String name = readString("Name: ");
+                        BigDecimal price = readBigDecimal("Price: ");
+                        String cat = readString("Category: ");
+                        simpleProductService.addProduct(id, name, price, false, cat);
+                    }
                     case "3" -> {
-                        int id = readInt("Enter Product ID to apply discount: ");
+                        int id = readInt("Enter Product ID: ");
                         double discount = readDouble("Enter discount percentage (0.1 for 10%): ");
                         simpleProductService.applyDiscount(id, discount);
                         System.out.println(ansi().fgGreen().a("Discount applied successfully.").reset());
@@ -62,16 +69,8 @@ public class SimpleProductMenu extends BaseMenu implements Menu {
                     case "0" -> back = true;
                 }
             } catch (EmptyDataException | InvalidInputException e) {
-                System.out.println(ansi().fgRed().a("Error: " + e.getMessage()).reset());
+                System.out.println(ansi().fg(Ansi.Color.RED).a(e.getMessage()).reset());
             }
         }
-    }
-
-    private void handleAddSimple() throws InvalidInputException {
-        int id = readInt("ID: ");
-        String name = readString("Name: ");
-        BigDecimal price = readBigDecimal("Price: ");
-        String cat = readString("Category: ");
-        simpleProductService.addProduct(id, name, price, false, cat);
     }
 }

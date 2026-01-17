@@ -2,6 +2,7 @@ package ui.menus.employeeMenus;
 
 import java.util.Scanner;
 
+import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.ansi;
 
 import exceptions.EmptyDataException;
@@ -25,7 +26,7 @@ public class SimpleEmployeeMenu  extends BaseMenu implements Menu {
 
     @Override
     public void displayOptions() {
-        System.out.println(ansi().fgCyan().bold().a("\n--- EMPLOYEE MANAGEMENT ---").reset());
+        System.out.println(ansi().fgCyan().bold().a("\n--- EMPLOYEES MANAGEMENT ---").reset());
         System.out.println("""
             1. List All Employees
 
@@ -51,7 +52,7 @@ public class SimpleEmployeeMenu  extends BaseMenu implements Menu {
                     case "0" -> back = true;
                 }
             } catch (EmptyDataException e) {
-                System.out.println(ansi().fgRed().a(e.getMessage()).reset());
+                System.out.println(ansi().fg(Ansi.Color.RED).a(e.getMessage()).reset());
             }
         }
     }

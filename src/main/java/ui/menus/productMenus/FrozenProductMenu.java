@@ -58,11 +58,8 @@ public class FrozenProductMenu extends BaseMenu implements Menu {
                     case "0" -> back = true;
                 }
             } 
-            catch (EmptyDataException e) {
-                System.out.println(ansi().fg(Ansi.Color.RED).a("Error: " + e.getMessage()).reset());
-            }
-            catch (InvalidInputException e) {
-                System.out.println(ansi().fg(Ansi.Color.RED).a("Invalid input: " + e.getMessage()).reset());
+            catch (EmptyDataException | InvalidInputException e) {
+                System.out.println(ansi().fg(Ansi.Color.RED).a(e.getMessage()).reset());
             }
         }
     }

@@ -1,5 +1,6 @@
 package services.employeeServices;
 
+import java.util.List;
 import java.util.Optional;
 
 import models.employeeModels.Employee;
@@ -20,7 +21,7 @@ public class SimpleEmployeeService {
     }
 
     // --- GET ALL EMPLOYEES ---
-    public java.util.List<Employee> getAllEmployees() {
+    public List<Employee> getAllEmployees() {
         return storage.getEmployees();
     }
 }
