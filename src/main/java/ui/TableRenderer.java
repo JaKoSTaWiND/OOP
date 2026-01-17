@@ -46,7 +46,11 @@ public class TableRenderer {
     }
 
     // --- EMPLOYEE TABLE ---
-    public static void printEmployeeTable(List<Employee> employees) {
+    public static void printEmployeeTable(List<? extends Employee> employees) throws EmptyDataException {
+        if (employees == null || employees.isEmpty()) {
+            throw new EmptyDataException("No employees found.");
+        }
+
         AsciiTable at = new AsciiTable();
         at.addRule();
         at.addRow("ID", "FULL NAME", "POSITION", "HOURLY RATE", "IS FULL TIME", "GET STARTED AT");
@@ -57,12 +61,20 @@ public class TableRenderer {
             at.addRule();
         }
 
+        at.getRenderer().setCWC(new CWC_FixedWidth()
+        .add(5).add(20).add(20).add(12).add(15).add(15)
+        );
+
         at.setTextAlignment(TextAlignment.CENTER);
         System.out.println(at.render());
     }
 
     // --- CUSTOMER TABLE ---
-    public static void printCustomerTable(List<Customer> customers) {
+    public static void printCustomerTable(List<? extends Customer> customers) throws EmptyDataException {
+        if (customers == null || customers.isEmpty()) {
+            throw new EmptyDataException("No customers found.");
+        }
+
         AsciiTable at = new AsciiTable();
         at.addRule();
         at.addRow("ID", "FULL NAME", "PHONE", "LOYLATY POINTS", "IS VIP");

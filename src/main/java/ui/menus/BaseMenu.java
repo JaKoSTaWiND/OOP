@@ -1,8 +1,8 @@
-/* this file contains exceptions for all menus in switch/case */
-
 package ui.menus;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import exceptions.InvalidInputException;
@@ -55,6 +55,15 @@ public abstract class BaseMenu {
             return value;
         } catch (NumberFormatException e) {
             throw new InvalidInputException("Invalid format! Please enter a number (e.g., 0.2).");
+        }
+    }
+
+    protected LocalDate readLocalDate(String prompt) throws InvalidInputException {
+        System.out.print(prompt + " (YYYY-MM-DD): ");
+        try {
+            return LocalDate.parse(scanner.nextLine());
+        } catch (DateTimeParseException e) {
+            throw new InvalidInputException("Invalid date format! Use YYYY-MM-DD (e.g., 2024-01-15).");
         }
     }
 }

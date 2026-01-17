@@ -13,13 +13,13 @@ import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
 public class SimpleProductMenu extends BaseMenu implements Menu {
-    private final SimpleProductService simpleService;
+    private final SimpleProductService simpleProductService;
     private final Menu freshMenu;
     private final Menu frozenMenu;
 
-    public SimpleProductMenu(SimpleProductService simpleService, Menu freshMenu, Menu frozenMenu, Scanner scanner) {
+    public SimpleProductMenu(SimpleProductService simpleProductService, Menu freshMenu, Menu frozenMenu, Scanner scanner) {
         super(scanner);
-        this.simpleService = simpleService;
+        this.simpleProductService = simpleProductService;
         this.freshMenu = freshMenu;
         this.frozenMenu = frozenMenu;
     }
@@ -48,12 +48,12 @@ public class SimpleProductMenu extends BaseMenu implements Menu {
             String choice = scanner.nextLine();
             try {
                 switch (choice) {
-                    case "1" -> TableRenderer.printProductTable(simpleService.getAllProducts());
+                    case "1" -> TableRenderer.printProductTable(simpleProductService.getAllProducts());
                     case "2" -> handleAddSimple();
                     case "3" -> {
                         int id = readInt("Enter Product ID to apply discount: ");
                         double discount = readDouble("Enter discount percentage (0.1 for 10%): ");
-                        simpleService.applyDiscount(id, discount);
+                        simpleProductService.applyDiscount(id, discount);
                         System.out.println(ansi().fgGreen().a("Discount applied successfully.").reset());
                     }
 
@@ -72,6 +72,6 @@ public class SimpleProductMenu extends BaseMenu implements Menu {
         String name = readString("Name: ");
         BigDecimal price = readBigDecimal("Price: ");
         String cat = readString("Category: ");
-        simpleService.addProduct(id, name, price, false, cat);
+        simpleProductService.addProduct(id, name, price, false, cat);
     }
 }
