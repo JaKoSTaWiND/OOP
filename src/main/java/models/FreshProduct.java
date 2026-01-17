@@ -10,16 +10,27 @@ public class FreshProduct extends Product {
         this.weight = weight;
     }
 
+    @Override
+    public String getSpecificDetails() {
+        String details = weight + " kg";
+        if (isBulk()) {
+            details += " (BULK)";
+        } else {
+            details += " (NOT BULK)";
+        }
+        return details;
+    }
+
+    @Override
+    public BigDecimal getTotalPrice() {
+        return this.unitPrice.multiply(BigDecimal.valueOf(weight));
+    }
+
     public double getWeight() { return weight; }
     public void setWeight(double weight) { if(weight > 0) this.weight = weight; }
 
     // --- CALCULATE BULK ( > 5 kg )
     public boolean isBulk() {
         return weight > 5.0;
-    }
-
-    // --- WEIGHT TO PRICE ---
-    public BigDecimal calculateTotalWeightPrice() {
-        return getUnitPrice().multiply(new BigDecimal(String.valueOf(weight)));
     }
 }

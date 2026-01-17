@@ -33,10 +33,11 @@ public final class DataStorage {
         products.add(new FreshProduct(4, "Beef Steak", new BigDecimal("15.90"), "Meat", 0.8));
 
         // FrozenProduct
-        products.add(new FrozenProduct(5, "Pizza Quattro", new BigDecimal("6.50"), "Frozen Food", -18));
-        products.add(new FrozenProduct(6, "Frozen Berries", new BigDecimal("4.00"), "Desserts", -20));
+        products.add(new FrozenProduct(5, "Pizza Quattro", new BigDecimal("6.50"), -18, "Frozen Food"));
+        products.add(new FrozenProduct(6, "Frozen Berries", new BigDecimal("4.00"), -20, "Desserts"));
 
         // --- EMPLOYEES ---
+        
         // Manager
         employees.add(new Manager(1, "Alex Johnson", new BigDecimal("50.00"), LocalDate.of(2022, 3, 1), 5));
         

@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 
-public class Product {
-    private int productId;
-    private String name;
-    private BigDecimal unitPrice;
-    private boolean isDiscounted;
-    private String category;
+abstract public class Product {
+    protected int productId;
+    protected String name;
+    protected BigDecimal unitPrice;
+    protected boolean isDiscounted;
+    protected String category;
 
     // --- CONSTRUCTION ---
     public Product(int productId, String name, BigDecimal unitPrice, boolean isDiscounted, String category) {
@@ -44,7 +44,7 @@ public class Product {
 
     public void setCategory(String category) {
         if (category != null) {
-            this.name = category;
+            this.category = category;
         } else {
             System.out.println("Invalid category");
         }
@@ -63,6 +63,10 @@ public class Product {
         this.isDiscounted = isDiscounted;
     }
 
+    /* --- ABSTRACT METHODS --- */
+    public abstract String getSpecificDetails(); // FreshProduct -> weight, isBulk; FrozenProduct -> storageTemp, isDeepFreeze
+    public abstract BigDecimal getTotalPrice(); // FreshProduct -> unitPrice * weight; FrozenProduct -> unitPrice
+
     // ---SET A DISCOUNT ---
     public void applyDiscount(double percentage) {
         if (percentage > 0 && percentage <= 1) {
@@ -75,13 +79,17 @@ public class Product {
         }
     }
 
-        // --- CALCULATE PRICE WITH VAT (НДС) ---
-        public void calculatePriceWithVAT(double vatRate) {
-            BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
-            this.unitPrice = unitPrice.multiply(vatFactor);
+    // --- CALCULATE PRICE WITH VAT (НДС) ---
+    public void calculatePriceWithVAT(double vatRate) {
+        BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
+        this.unitPrice = unitPrice.multiply(vatFactor);
 
-            System.out.println("Current unit price: " + this.unitPrice);
-        }
+        System.out.println("Current unit price: " + this.unitPrice);
+    }
+
+    public String getDefrostAdvice() {
+    return "No defrosting needed.";
+    }
 
     @Override
     public String toString() {

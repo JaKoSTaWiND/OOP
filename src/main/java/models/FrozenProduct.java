@@ -5,9 +5,25 @@ import java.math.BigDecimal;
 public class FrozenProduct extends Product {
     private int storageTemp;
 
-    public FrozenProduct(int productId, String name, BigDecimal unitPrice, String category, int storageTemp) {
+    public FrozenProduct(int productId, String name, BigDecimal unitPrice, int storageTemp, String category) {
         super(productId, name, unitPrice, false, category);
         this.storageTemp = storageTemp;
+    }
+
+    @Override
+    public String getSpecificDetails() {
+        String details = storageTemp + "°C";
+        if (isDeepFreeze()) {
+            details += " (DEEP)";
+        } else {
+            details += " (NOT DEEP)";
+        }
+        return details;
+    }
+
+    @Override
+    public BigDecimal getTotalPrice() {
+        return this.unitPrice;
     }
 
     public int getStorageTemp() { return storageTemp; }
@@ -19,6 +35,7 @@ public class FrozenProduct extends Product {
     }
 
     // --- ADVICE ---
+    @Override
     public String getDefrostAdvice() {
         return "Keep at room temperature for 2 hours before cooking.";
     }
