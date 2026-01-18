@@ -1,12 +1,10 @@
 package models.employeeModels;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import org.fusesource.jansi.Ansi;
-import static org.fusesource.jansi.Ansi.ansi;
+import exceptions.InvalidSettersException;
 
  abstract public class Employee {
     private int employeeId;
@@ -19,11 +17,11 @@ import static org.fusesource.jansi.Ansi.ansi;
     // --- CONSTRUCTION ---
     public Employee(int employeeId, String fullName, BigDecimal hourlyRate, String position, boolean isFullTime, LocalDate startedAt) {
         this.employeeId = employeeId;
-        this.fullName = fullName;
-        this.hourlyRate = hourlyRate;
-        this.position = position;
-        this.isFullTime = isFullTime;
-        this.startedAt = startedAt;
+        setFullName(fullName);
+        setHourlyRate(hourlyRate);
+        setPosition(position);
+        setIsFullTime(isFullTime);
+        setStartedAt(startedAt);
     }
 
     // --- DEFAULT CONSTRUCTION ---
@@ -41,51 +39,37 @@ import static org.fusesource.jansi.Ansi.ansi;
     public LocalDate getStartedAt() { return startedAt;}
 
     // --- SETTERS ---
-    public void setFullName(String fullName) {
-        if (fullName != null) {
+    public final void setFullName(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) {
+            throw new InvalidSettersException("Fullname can not be empty.");
+        }
             this.fullName = fullName;
-        } else {
-            System.out.println("Invalid full name");
-        }
     }
 
-    public void setHourlyRate(BigDecimal hourlyRate) {
-        if (hourlyRate.compareTo(BigDecimal.ZERO) >= 0) {
-            this.hourlyRate = hourlyRate;
-        } else {
-            System.out.println("Invalid hourly rate");
+    public final void setHourlyRate(BigDecimal hourlyRate) {
+        if (hourlyRate == null || hourlyRate.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidSettersException("Hourly rate can not be negative or missing.");
         }
+        this.hourlyRate = hourlyRate;
     }
 
-    public void setPosition(String position) {
-        if (position != null) {
-            this.position = position;
-        } else {
-            System.out.println("Invalid position");
+    public final void setPosition(String position) {
+        if (position == null || position.trim().isEmpty()) {
+            throw new InvalidSettersException("Position can not be empty.");
         }
+        this.position = position;
     }
 
-    public void setIsFullTime(boolean isFullTime) {
+    public final void setIsFullTime(boolean isFullTime) {
         this.isFullTime = isFullTime;
     }
 
-    public void setStartedAt(LocalDate startedAt) {
+    public final void setStartedAt(LocalDate startedAt) {
         this.startedAt = startedAt;
     }
 
-
-
-    // --- CALCULATE MOUTHLY SALARY ---
-    public BigDecimal calculateMouthlySalary(double bonusPercentage, int workedHours) {
-        BigDecimal hours = new BigDecimal(workedHours);
-        BigDecimal bonus = new BigDecimal(bonusPercentage);
-
-        BigDecimal baseSalary = hourlyRate.multiply(hours);
-        BigDecimal resultSalary = baseSalary.add(bonus).setScale(2, RoundingMode.HALF_UP);
-
-        System.out.println(ansi().fg(Ansi.Color.GREEN).a("Result: " + "$" + resultSalary));
-        return resultSalary;
-    }
+    public abstract String getRoleSpecificInfo();
+    public abstract BigDecimal calculateFinalSalary(int workedHours); 
 
     // --- CALCULATE EXPERIENCE (YEARS) ---
     public long calculateExperience() {

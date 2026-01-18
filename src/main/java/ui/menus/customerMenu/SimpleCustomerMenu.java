@@ -7,17 +7,19 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
+import factories.CustomerFactory;
+import interfaces.ICustomerService;
 import interfaces.Menu;
-import services.customerServices.SimpleCustomerService;
+import models.Customer;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
 public class SimpleCustomerMenu extends BaseMenu implements Menu {
-    private final SimpleCustomerService simpleCustomerService;
+    private final ICustomerService customerService;
 
-    public SimpleCustomerMenu(SimpleCustomerService simpleCustomerService, Scanner scanner) {
+    public SimpleCustomerMenu(ICustomerService customerService, Scanner scanner) {
         super(scanner);
-        this.simpleCustomerService = simpleCustomerService;
+        this.customerService = customerService;
     }
 
     @Override
@@ -43,18 +45,23 @@ public class SimpleCustomerMenu extends BaseMenu implements Menu {
 
             try {
                 switch (choice) {
-                    case "1" -> TableRenderer.printCustomerTable(simpleCustomerService.getAllCustomers());
+                    case "1" -> TableRenderer.printCustomerTable(customerService.getAllCustomers());
                     case "2" -> {
                         int id = readInt("Enter Customer ID: ");
                         String name = readString("Enter Name: ");
                         String phone = readString("Enter Phone: ");
                         int loyaltyPoints = readInt("Enter Loyalty Points: ");
-                        simpleCustomerService.addCustomer(id, name, phone, loyaltyPoints, false);
+
+                        Customer customer = CustomerFactory.createCustomer(id, name, phone, loyaltyPoints, false);
+                        customerService.addCustomer(customer);
+                        System.out.println(ansi().fg(Ansi.Color.GREEN).a("Customer added successfully").reset());
                     }
                     case "3" -> {
                         int id = readInt("Enter Customer ID: ");
-                        double amount = readDouble("Enter Amount to Add: ");
-                        simpleCustomerService.addLoyaltyPoints(id, amount);
+                        int amount = readPositiveInt("Enter Amount to Add: ");
+                        
+                        customerService.addLoyaltyPoints(id, amount);
+                        System.out.println(ansi().fgGreen().a(amount + "loyalty points added successfully.").reset());
                     }
                     case "0" -> back = true;
                 }

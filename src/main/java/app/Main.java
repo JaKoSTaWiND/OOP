@@ -2,14 +2,13 @@ package app;
 
 import java.util.Scanner;
 
+import interfaces.ICustomerService;
+import interfaces.IEmployeeService;
+import interfaces.IProductService;
 import interfaces.Menu;
-import services.customerServices.SimpleCustomerService;
-import services.employeeServices.CashierEmployeeService;
-import services.employeeServices.ManagerEmployeeService;
-import services.employeeServices.SimpleEmployeeService;
-import services.productServices.FreshProductService;
-import services.productServices.FrozenProductService;
-import services.productServices.SimpleProductService;
+import services.CustomerService;
+import services.EmployeeService;
+import services.ProductService;
 import storage.DataStorage;
 import ui.menus.StoreMenu;
 import ui.menus.customerMenu.SimpleCustomerMenu;
@@ -26,28 +25,22 @@ public class Main {
         DataStorage storage = new DataStorage();
 
         // --- SERVICES ---
-        SimpleProductService simpleProductService = new SimpleProductService(storage); // Simple Products
-        FreshProductService freshService = new FreshProductService(storage); // Fresh Products
-        FrozenProductService frozenService = new FrozenProductService(storage); // Frozen Products
-
-        SimpleEmployeeService simpleEmployeeService = new SimpleEmployeeService(storage); // Employees
-        ManagerEmployeeService managerEmployeeService = new ManagerEmployeeService(storage); // Managers
-        CashierEmployeeService cashierEmployeeService = new CashierEmployeeService(storage); // Cashiers
-
-        SimpleCustomerService simpleCustomerService = new SimpleCustomerService(storage); // Customers
+        IProductService productService = new ProductService(storage); // Product 
+        IEmployeeService employeeService = new EmployeeService(storage); // Employee
+        ICustomerService customerService = new CustomerService(storage); // Customer
 
 
         // --- MENUS ( !!! must initialize from bottom to top by menu hierarchy !!!) ---
-        Menu freshProductMenu = new FreshProductMenu(freshService, scanner); // Fresh Products
-        Menu frozenProductMenu = new FrozenProductMenu(frozenService, scanner); // Frozen Products
+        Menu freshProductMenu = new FreshProductMenu(productService, scanner); // Fresh Products
+        Menu frozenProductMenu = new FrozenProductMenu(productService, scanner); // Frozen Products
 
-        Menu managerEmployeeMenu = new ManagerEmployeeMenu(managerEmployeeService, scanner); // Managers
-        Menu cashierEmployeeMenu = new CashierEmployeeMenu(cashierEmployeeService, scanner); // Cashiers
-        
+        Menu managerEmployeeMenu = new ManagerEmployeeMenu(employeeService, scanner); // Managers
+        Menu cashierEmployeeMenu = new CashierEmployeeMenu(employeeService, scanner); // Cashiers
 
-        Menu simpleProductMenu = new SimpleProductMenu(simpleProductService, freshProductMenu, frozenProductMenu, scanner); // Products
-        Menu simpleEmployeeMenu = new SimpleEmployeeMenu(simpleEmployeeService, managerEmployeeMenu, cashierEmployeeMenu,scanner); // Employees
-        Menu simpleCustomerMenu = new SimpleCustomerMenu(simpleCustomerService, scanner); // Customers
+
+        Menu simpleProductMenu = new SimpleProductMenu(productService, freshProductMenu, frozenProductMenu, scanner); // Products
+        Menu simpleEmployeeMenu = new SimpleEmployeeMenu(employeeService, managerEmployeeMenu, cashierEmployeeMenu,scanner); // Employees
+        Menu simpleCustomerMenu = new SimpleCustomerMenu(customerService, scanner); // Customers
 
         // --- LAUNCH ---
         Menu mainMenu = new StoreMenu(simpleProductMenu, simpleEmployeeMenu, simpleCustomerMenu,scanner);

@@ -2,12 +2,14 @@ package models.productModels;
 
 import java.math.BigDecimal;
 
+import exceptions.InvalidSettersException;
+
 public class FrozenProduct extends Product {
     private int storageTemp;
 
     public FrozenProduct(int productId, String name, BigDecimal unitPrice, int storageTemp, String category) {
         super(productId, name, unitPrice, false, category);
-        this.storageTemp = storageTemp;
+        setStorageTemp(storageTemp);
     }
 
     @Override
@@ -29,7 +31,12 @@ public class FrozenProduct extends Product {
     @Override
     public String getTemp() { return this.storageTemp + " °C"; }
 
-    public void setStorageTemp(int temp) { this.storageTemp = temp; }
+    public final void setStorageTemp(int storageTemp) {
+        if (storageTemp < -273) { 
+            throw new InvalidSettersException("Temperature is too low!");
+        }
+        this.storageTemp = storageTemp;
+    }
 
     // --- DEEP FREEZE ---
     public boolean isDeepFreeze() {

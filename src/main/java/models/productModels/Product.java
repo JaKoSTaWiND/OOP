@@ -3,6 +3,8 @@ package models.productModels;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import exceptions.InvalidSettersException;
+
 
 abstract public class Product {
     protected int productId;
@@ -14,10 +16,10 @@ abstract public class Product {
     // --- CONSTRUCTION ---
     public Product(int productId, String name, BigDecimal unitPrice, boolean isDiscounted, String category) {
         this.productId = productId;
-        this.name = name;
-        this.unitPrice = unitPrice.setScale(2, RoundingMode.HALF_UP);
-        this.category = category;
-        this.isDiscounted = isDiscounted;
+        setName(name);
+        setUnitPrice(unitPrice);
+        setCategory(category);
+        setIsDiscounted(isDiscounted);
     }
 
     // --- DEFAULT CONSTRUCTOR ---
@@ -34,32 +36,28 @@ abstract public class Product {
     public boolean isDiscounted() { return  isDiscounted; }
 
     // --- SETTERS ---
-    public void setName(String name) {
-        if (name != null) {
-            this.name = name;
-        } else {
-            System.out.println("Invalid name");
+    public final void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new InvalidSettersException("Name can not be empty.");
         }
+        this.name = name;
     }
 
-    public void setCategory(String category) {
-        if (category != null) {
-            this.category = category;
-        } else {
-            System.out.println("Invalid category");
+    public final void setCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
+            throw new InvalidSettersException("Category can not be empty.");
         }
+        this.category = category;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-
-        if (unitPrice.compareTo(BigDecimal.ZERO) >= 0) {
-            this.unitPrice = unitPrice;
-        } else {
-            System.out.println("Invalid unit price");
+    public final void setUnitPrice(BigDecimal unitPrice) {
+        if (unitPrice == null || unitPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidSettersException("Price can not be negative or empty.");
         }
+        this.unitPrice = unitPrice.setScale(2, RoundingMode.HALF_UP);
     }
 
-    public void setIsDiscounted(boolean isDiscounted) {
+    public final void setIsDiscounted(boolean isDiscounted) {
         this.isDiscounted = isDiscounted;
     }
 
@@ -69,25 +67,25 @@ abstract public class Product {
     public String getWeight() { return "-"; }
     public String getTemp() { return "-"; }
 
-    // ---SET A DISCOUNT ---
-    public void applyDiscount(double percentage) {
-        if (percentage > 0 && percentage <= 1) {
-            BigDecimal discountFactor = new BigDecimal(String.valueOf(1.0 - percentage));
-            this.unitPrice = this.unitPrice.multiply(discountFactor).setScale(2, RoundingMode.HALF_UP);
-            this.isDiscounted = true;
+    // // ---SET A DISCOUNT ---
+    // public void applyDiscount(double percentage) {
+    //     if (percentage > 0 && percentage <= 1) {
+    //         BigDecimal discountFactor = new BigDecimal(String.valueOf(1.0 - percentage));
+    //         this.unitPrice = this.unitPrice.multiply(discountFactor).setScale(2, RoundingMode.HALF_UP);
+    //         this.isDiscounted = true;
 
-            System.out.println("Current unit price: " + this.unitPrice);
-            System.out.println("Is discounted: " + true);
-        }
-    }
+    //         System.out.println("Current unit price: " + this.unitPrice);
+    //         System.out.println("Is discounted: " + true);
+    //     }
+    // }
 
-    // --- CALCULATE PRICE WITH VAT (НДС) ---
-    public void calculatePriceWithVAT(double vatRate) {
-        BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
-        this.unitPrice = unitPrice.multiply(vatFactor).setScale(2, RoundingMode.HALF_UP);
+    // // --- CALCULATE PRICE WITH VAT (НДС) ---
+    // public void calculatePriceWithVAT(double vatRate) {
+    //     BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
+    //     this.unitPrice = unitPrice.multiply(vatFactor).setScale(2, RoundingMode.HALF_UP);
 
-        System.out.println("Current unit price: " + this.unitPrice);
-    }
+    //     System.out.println("Current unit price: " + this.unitPrice);
+    // }
 
     public String getDefrostAdvice() {
     return "No defrosting needed.";

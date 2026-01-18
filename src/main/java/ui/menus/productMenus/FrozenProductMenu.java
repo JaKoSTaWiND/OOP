@@ -8,17 +8,20 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
+import factories.ProductFactory;
+import interfaces.IProductService;
 import interfaces.Menu;
-import services.productServices.FrozenProductService;
+import models.productModels.FrozenProduct;
+import models.productModels.Product;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
 public class FrozenProductMenu extends BaseMenu implements Menu {
-    private final FrozenProductService frozenProductService;
+    private final IProductService productService;
 
-    public FrozenProductMenu(FrozenProductService frozenProductService, Scanner scanner) {
+    public FrozenProductMenu(IProductService productService, Scanner scanner) {
         super(scanner);
-        this.frozenProductService = frozenProductService;
+        this.productService = productService;
     }
 
     @Override
@@ -42,18 +45,17 @@ public class FrozenProductMenu extends BaseMenu implements Menu {
 
             try {
                 switch (choice) {
-                    case "1" -> {
-                        System.out.println(ansi().reset());
-                        TableRenderer.printProductTable(frozenProductService.getAllFrozenProducts());
-                    }
+                    case "1" -> TableRenderer.printProductTable(productService.getProductsByType(FrozenProduct.class));
                     case "2" -> {
                         int id = readInt("Enter ID: ");
                         String name = readString("Enter name: ");
                         BigDecimal price = readBigDecimal("Enter price: ");
-                        int storageTemp = readInt("Enter storage temperature (°C): ");
+                        int storageTemp = readPositiveInt("Enter storage temperature (°C): ");
                         String category = readString("Enter category: ");
 
-                        frozenProductService.addFrozenProduct(id, name, price, storageTemp, category);
+                        Product product = ProductFactory.createFrozen(id, name, price, storageTemp, category);
+                        productService.addProduct(product);
+                        System.out.println(ansi().fg(Ansi.Color.GREEN).a("Frozen product added successfully").reset());
                     }
                     case "0" -> back = true;
                 }

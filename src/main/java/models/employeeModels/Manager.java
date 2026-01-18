@@ -11,19 +11,7 @@ public class Manager extends Employee {
         this.teamSize = teamSize;
     }
 
-    public int getTeamSize() { return teamSize; }
     public void setTeamSize(int size) { this.teamSize = size; }
-
-    @Override
-    public BigDecimal calculateMouthlySalary(double bonusPercentage, int workedHours) {
-        /* 
-        1. Calculate standard salary
-        2. Add team bonus (count of team members * 50$ for each member)      
-        */
-        BigDecimal standardSalary = super.calculateMouthlySalary(bonusPercentage, workedHours);
-        BigDecimal teamBonus = new BigDecimal(teamSize).multiply(new BigDecimal("50.00")); 
-        return standardSalary.add(teamBonus);
-    }
 
     public void rewardTeam() {
         System.out.println("Manager " + getFullName() + " awarded a bonus to " + teamSize + " employees.");
@@ -31,5 +19,17 @@ public class Manager extends Employee {
 
     public boolean canApproveLargeDiscount() {
         return calculateExperience() >= 3; 
+    }
+
+    @Override
+    public String getRoleSpecificInfo() {
+        return "Team Size: " + teamSize;
+    }
+
+    @Override
+    public BigDecimal calculateFinalSalary(int workedHours) {
+        BigDecimal base = getHourlyRate().multiply(new BigDecimal(workedHours));
+        BigDecimal teamBonus = new BigDecimal(teamSize).multiply(new BigDecimal("50.00"));
+        return base.add(teamBonus);
     }
 }

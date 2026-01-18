@@ -23,15 +23,19 @@ public abstract class BaseMenu {
         return input;
     }
 
-    protected int readInt(String prompt) throws InvalidInputException {
+    protected int readInt(String prompt) throws InvalidInputException { // read integer with error handling
         System.out.print(prompt);
         try {
-            int value = Integer.parseInt(scanner.nextLine());
-            if (value < 0) throw new InvalidInputException("Value cannot be negative!");
-            return value;
+            return Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             throw new InvalidInputException("Invalid format! Please enter a whole number.");
         }
+    }
+
+    protected int readPositiveInt(String prompt) throws InvalidInputException { // read positive integer
+        int value = readInt(prompt);
+        if (value < 0) throw new InvalidInputException("Value cannot be negative!");
+        return value;
     }
 
     protected BigDecimal readBigDecimal(String prompt) throws InvalidInputException {

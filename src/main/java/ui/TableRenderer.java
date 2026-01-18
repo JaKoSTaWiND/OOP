@@ -112,7 +112,7 @@ public class TableRenderer {
         .add(5) // ID
         .add(20) // FULL NAME
         .add(20) // PHONE
-        .add(5) // LOYALTY POINTS
+        .add(25) // LOYALTY POINTS
         .add(15) // IS VIP
         );
 

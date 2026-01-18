@@ -1,5 +1,7 @@
 package models;
 
+import exceptions.InvalidSettersException;
+
 public class Customer {
     private final int customerId;
     private String fullName;
@@ -10,10 +12,10 @@ public class Customer {
     // --- CONSTRUCTION ---
     public Customer(int customerId, String fullName, String phone, int loyaltyPoints, boolean isVip) {
         this.customerId = customerId;
-        this.fullName = fullName;
-        this.phone = phone;
-        this.loyaltyPoints = loyaltyPoints;
-        this.isVip = isVip;
+        setFullName(fullName);
+        setPhone(phone);
+        setLoyaltyPoints(loyaltyPoints);
+        setIsVip(isVip);
     }
 
     // --- DEFAULT CONSTRUCTION ---
@@ -31,54 +33,37 @@ public class Customer {
     public boolean isVip() { return isVip; }
 
     // --- SETTERS ---
-    public void setFullName(String fullName) {
-        if (fullName != null) {
+    public final void setFullName(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) {
+            throw new InvalidSettersException("Full name can not be empty.");
+        } else {
             this.fullName = fullName;
-        } else {
-            System.out.println("Invalid full name");
         }
     }
 
-    public void setPhone(String phone) {
-        if (phone != null && phone.length() == 12) {
-            this.phone = phone;
-        } else {
-            System.out.println("Invalid phone");
+    public final void setPhone(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            throw new InvalidSettersException("Phone can not be empty.");
         }
+        
+        int phoneLength = phone.trim().length();
+        if (phoneLength != 11 && phoneLength != 12) {
+            throw new InvalidSettersException("Phone must include 11 digits (KZ (8...)) or 12 digits (INTER (+7...)).");
+        }
+        
+        this.phone = phone.trim();
     }
 
-    public void setLoyaltyPoints(int loyaltyPoints) {
-        if (loyaltyPoints >= 0) {
+    public final void setLoyaltyPoints(int loyaltyPoints) {
+        if (loyaltyPoints < 0) {
+            throw new InvalidSettersException("Loyalty points can not be negative.");
+        } else {
             this.loyaltyPoints = loyaltyPoints;
-        } else {
-            System.out.println("Invalid loyalty points");
         }
     }
 
-    public void setIsVip(boolean isVip) {
+    public final void setIsVip(boolean isVip) {
         this.isVip = isVip;
-    }
-
-    // --- ADD LOYALTY POINTS ---
-    public void addLoyaltyPoints(double amount) {
-        int pointsToAdd = (int) (amount);
-        this.loyaltyPoints = this.loyaltyPoints + pointsToAdd;
-        System.out.println("Current loyalty points: " + this.loyaltyPoints);
-    }
-
-    // --- USE POINTS TO DISCOUNT ---
-    public boolean pointsToDiscount(int pointsToUse, double price) {
-        double currentPrice = (price);
-        double resultPrice;
-
-        if (pointsToUse > 0 && this.loyaltyPoints >= pointsToUse) {
-            resultPrice = currentPrice - pointsToUse;
-            this.loyaltyPoints = this.loyaltyPoints - pointsToUse;
-            System.out.println("Price with discount: " + resultPrice);
-            return true;
-        }
-        System.out.println("Not enough loyalty points. Available: " + this.loyaltyPoints);
-        return false;
     }
 
     // --- TO STRING ---

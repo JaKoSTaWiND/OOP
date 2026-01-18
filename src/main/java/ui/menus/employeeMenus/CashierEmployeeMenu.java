@@ -1,7 +1,6 @@
 package ui.menus.employeeMenus;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
@@ -9,17 +8,20 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
+import factories.EmployeeFactory;
+import interfaces.IEmployeeService;
 import interfaces.Menu;
-import services.employeeServices.CashierEmployeeService;
+import models.employeeModels.Cashier;
+import models.employeeModels.Employee;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
 public class CashierEmployeeMenu extends BaseMenu implements Menu {
-    private final CashierEmployeeService employeeCashierService;
+    private final IEmployeeService employeeService;
 
-    public CashierEmployeeMenu(CashierEmployeeService employeeCashierService, Scanner scanner) {
+    public CashierEmployeeMenu(IEmployeeService employeeService, Scanner scanner) {
         super(scanner);
-        this.employeeCashierService = employeeCashierService;
+        this.employeeService = employeeService;
     }
 
     @Override
@@ -43,14 +45,16 @@ public class CashierEmployeeMenu extends BaseMenu implements Menu {
 
             try {
                 switch (choice) {
-                    case "1" -> TableRenderer.printEmployeeTable(employeeCashierService.getAllCashiers());
+                    case "1" -> TableRenderer.printEmployeeTable(employeeService.getEmployeesByType(Cashier.class));
                     case "2" -> {
                         int id = readInt("Enter ID: ");
                         String name = readString("Enter name: ");
                         BigDecimal hourlyRate = readBigDecimal("Enter hourly rate: ");
-                        LocalDate startDate = readLocalDate("Enter start date");
                         int registerNumbers = readInt("Enter register numbers: ");
-                        employeeCashierService.addCashier(id, name, hourlyRate, startDate, registerNumbers);
+
+                        Employee employee = EmployeeFactory.createCashier(id, name, hourlyRate, registerNumbers);
+                        employeeService.addEmployee(employee);
+                        System.out.println(ansi().fg(Ansi.Color.GREEN).a("Cashier added successfully").reset());
                     }
                     case "0" -> back = true;
                 }

@@ -1,7 +1,6 @@
 package ui.menus.employeeMenus;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
@@ -9,18 +8,21 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
+import factories.EmployeeFactory;
+import interfaces.IEmployeeService;
 import interfaces.Menu;
-import services.employeeServices.ManagerEmployeeService;
+import models.employeeModels.Employee;
+import models.employeeModels.Manager;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
 public class ManagerEmployeeMenu extends BaseMenu implements Menu {
-    private final ManagerEmployeeService employeeManagerService;
+    private final IEmployeeService employeeService;
 
 
-    public ManagerEmployeeMenu(ManagerEmployeeService employeeManagerService, Scanner scanner) {
+    public ManagerEmployeeMenu(IEmployeeService employeeService, Scanner scanner) {
         super(scanner);
-        this.employeeManagerService = employeeManagerService;
+        this.employeeService = employeeService;
     }
 
     @Override
@@ -44,14 +46,17 @@ public class ManagerEmployeeMenu extends BaseMenu implements Menu {
 
             try {
                 switch (choice) {
-                    case "1" -> TableRenderer.printEmployeeTable(employeeManagerService.getAllManagers());
+                    case "1" -> TableRenderer.printEmployeeTable(employeeService.getEmployeesByType(Manager.class));
                     case "2" -> {
                         int id = readInt("Enter ID: ");
                         String name = readString("Enter name: ");
                         BigDecimal hourlyRate = readBigDecimal("Enter hourly rate: ");
-                        LocalDate startDate = readLocalDate("Enter start date");
                         int teamSize = readInt("Enter team size: ");
-                        employeeManagerService.addManager(id, name, hourlyRate, startDate, teamSize);
+
+                        Employee employee = EmployeeFactory.createManager(id, name, hourlyRate, teamSize);
+                        employeeService.addEmployee(employee);
+                        System.out.println(ansi().fg(Ansi.Color.GREEN).a("Manager added successfully").reset());
+                        
                     }
                     case "0" -> back = true;
                 }
