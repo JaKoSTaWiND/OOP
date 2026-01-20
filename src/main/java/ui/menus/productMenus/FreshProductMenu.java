@@ -57,7 +57,7 @@ public class FreshProductMenu extends BaseMenu implements Menu {
                         double weight = readDouble("Enter Weight: ");
                         String category = readString("Enter Category: ");
                         
-                        Product product = ProductFactory.createFresh(id, name, price, category, weight);
+                        Product product = ProductFactory.createFreshProduct(id, name, price, category, weight);
                         productService.addProduct(product);
                         System.out.println(ansi().fg(Ansi.Color.GREEN).a("Fresh product added successfully").reset());
 

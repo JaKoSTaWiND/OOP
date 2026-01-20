@@ -25,7 +25,6 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // 2. Достаем меню из контекста только когда всё УЖЕ собрано
         Menu mainMenu = context.getBean(StoreMenu.class);
         mainMenu.run();
     }

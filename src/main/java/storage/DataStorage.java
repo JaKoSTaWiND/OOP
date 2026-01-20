@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import factories.EmployeeFactory;
 import factories.ProductFactory;
-import models.Customer;
+import models.customerModels.Customer;
 import models.employeeModels.Employee;
 import models.productModels.Product;
 
@@ -24,11 +24,11 @@ public final class DataStorage {
 
     public void initData() {
         // --- PRODUCTS ---        
-        products.add(ProductFactory.createFresh(1, "Red Apples", new BigDecimal("3.20"), "Fruits", 1.5));
-        products.add(ProductFactory.createFresh(2, "Beef Steak", new BigDecimal("15.90"), "Meat", 0.8));
+        products.add(ProductFactory.createFreshProduct(1, "Red Apples", new BigDecimal("3.20"), "Fruits", 1.5));
+        products.add(ProductFactory.createFreshProduct(2, "Beef Steak", new BigDecimal("15.90"), "Meat", 0.8));
 
-        products.add(ProductFactory.createFrozen(3, "Pizza Quattro", new BigDecimal("6.50"), -18, "Frozen Food"));
-        products.add(ProductFactory.createFrozen(4, "Frozen Berries", new BigDecimal("4.00"), -20, "Desserts"));
+        products.add(ProductFactory.createFrozenProduct(3, "Pizza Quattro", new BigDecimal("6.50"), -18, "Frozen Food"));
+        products.add(ProductFactory.createFrozenProduct(4, "Frozen Berries", new BigDecimal("4.00"), -20, "Desserts"));
 
 
         // --- EMPLOYEES ---
@@ -44,11 +44,22 @@ public final class DataStorage {
         customers.add(new Customer(3, "Charlie Brown", "87479998877", 0, true));
     }
 
+
+    // --- GET DATA ---
     public List<Product> getProducts() { return products; }
     public List<Employee> getEmployees() { return employees; }
     public List<Customer> getCustomers() { return customers; }
 
+    // --- ADD DATA ---
     public void addProduct(Product product) { this.products.add(product); }
     public void addEmployee(Employee employee) { this.employees.add(employee); }
     public void addCustomer(Customer customer) { this.customers.add(customer); }
+
+    // --- UPDATE DATA ---
+    public void updateProduct(Product oldProduct, Product newProduct) {
+        int index = products.indexOf(oldProduct);
+        if (index != -1) {
+            products.set(index, newProduct);
+    }
+}
 }

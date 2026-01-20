@@ -1,4 +1,4 @@
-package models;
+package models.customerModels;
 
 import exceptions.InvalidSettersException;
 

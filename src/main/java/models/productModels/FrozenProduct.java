@@ -2,48 +2,45 @@ package models.productModels;
 
 import java.math.BigDecimal;
 
-import exceptions.InvalidSettersException;
+import org.immutables.value.Value;
 
-public class FrozenProduct extends Product {
-    private int storageTemp;
+@Value.Immutable
+public abstract class FrozenProduct extends Product {
 
-    public FrozenProduct(int productId, String name, BigDecimal unitPrice, int storageTemp, String category) {
-        super(productId, name, unitPrice, false, category);
-        setStorageTemp(storageTemp);
+    public abstract int storageTemp();
+
+    // --- DERIVED ---
+    @Value.Derived
+    public boolean isDeepFreeze() {   // --- DEEP FREEZE IF <= -18C
+        return storageTemp() <= -18;
+    }
+
+    // --- VALIDATION ---
+    @Value.Check
+    protected void checkStorageTemp() {
+        if (storageTemp() < -273) { 
+            throw new IllegalStateException("Temperature is too low!");
+        }
     }
 
     @Override
     public String getSpecificDetails() {
-        String details = storageTemp + "°C";
+        StringBuilder details = new StringBuilder();
+        details.append(storageTemp()).append(" °C.");
+
         if (isDeepFreeze()) {
-            details += " (DEEP)";
+            details.append(" (DEEP)");
         } else {
-            details += " (NOT DEEP)";
+            details.append(" (NOT DEEP)");
         }
-        return details;
+        return details.toString();
     }
 
     @Override
     public BigDecimal getTotalPrice() {
-        return this.unitPrice;
+        return unitPrice();
     }
-
-    @Override
-    public String getTemp() { return this.storageTemp + " °C"; }
-
-    public final void setStorageTemp(int storageTemp) {
-        if (storageTemp < -273) { 
-            throw new InvalidSettersException("Temperature is too low!");
-        }
-        this.storageTemp = storageTemp;
-    }
-
-    // --- DEEP FREEZE ---
-    public boolean isDeepFreeze() {
-        return storageTemp <= -18;
-    }
-
-    // --- ADVICE ---
+    
     @Override
     public String getDefrostAdvice() {
         return "Keep at room temperature for 2 hours before cooking.";

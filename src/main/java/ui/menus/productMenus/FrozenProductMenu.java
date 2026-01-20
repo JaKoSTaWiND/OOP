@@ -55,7 +55,7 @@ public class FrozenProductMenu extends BaseMenu implements Menu {
                         int storageTemp = readPositiveInt("Enter storage temperature (°C): ");
                         String category = readString("Enter category: ");
 
-                        Product product = ProductFactory.createFrozen(id, name, price, storageTemp, category);
+                        Product product = ProductFactory.createFrozenProduct(id, name, price, storageTemp, category);
                         productService.addProduct(product);
                         System.out.println(ansi().fg(Ansi.Color.GREEN).a("Frozen product added successfully").reset());
                     }

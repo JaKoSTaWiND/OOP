@@ -2,37 +2,42 @@ package models.productModels;
 
 import java.math.BigDecimal;
 
-public class FreshProduct extends Product {
-    private double weight;
+import org.immutables.value.Value;
 
-    public FreshProduct(int productId, String name, BigDecimal unitPrice, String category, double weight) {
-        super(productId, name, unitPrice, false, category);
-        this.weight = weight;
+@Value.Immutable
+public abstract class FreshProduct extends Product {
+
+    public abstract double weight();
+
+    // --- DERIVED ---
+    @Value.Derived
+    public boolean isBulk() {   // --- CALCULATE BULK ( > 5 kg )
+        return weight() > 5.0;
+    }
+
+    // --- VALIDATION ---
+    @Value.Check
+    protected void checkWeight() {
+        if (weight() <= 0) {
+            throw new IllegalStateException("Weight must be positive");
+        }
     }
 
     @Override
     public String getSpecificDetails() {
-        String details = weight + " kg";
+        StringBuilder details = new StringBuilder();
+        details.append(weight()).append(" kg.");
+
         if (isBulk()) {
-            details += " (BULK)";
+            details.append("(BULK)");
         } else {
-            details += " (NOT BULK)";
+            details.append("(NOT BULK)");
         }
-        return details;
+        return details.toString();
     }
 
     @Override
     public BigDecimal getTotalPrice() {
-        return this.unitPrice.multiply(BigDecimal.valueOf(weight));
-    }
-
-    @Override
-    public String getWeight() { return this.weight + " kg"; }
-
-    public void setWeight(double weight) { if(weight > 0) this.weight = weight; }
-
-    // --- CALCULATE BULK ( > 5 kg )
-    public boolean isBulk() {
-        return weight > 5.0;
+        return normalizedPrice().multiply(BigDecimal.valueOf(weight()));
     }
 }

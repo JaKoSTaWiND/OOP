@@ -1,6 +1,6 @@
 package factories;
 
-import models.Customer;
+import models.customerModels.Customer;
 
 public class CustomerFactory {
 

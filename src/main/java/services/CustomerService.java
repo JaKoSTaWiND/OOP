@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import exceptions.InvalidSettersException;
 import interfaces.ICustomerService;
-import models.Customer;
+import models.customerModels.Customer;
 import storage.DataStorage;
 
 @Service

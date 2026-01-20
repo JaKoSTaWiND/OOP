@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 
 import exceptions.InvalidSettersException;
 import interfaces.IProductService;
+import models.productModels.BaseFreshProduct;
+import models.productModels.BaseFrozenProduct;
+import models.productModels.FreshProduct;
+import models.productModels.FrozenProduct;
 import models.productModels.Product;
 import storage.DataStorage;
 
@@ -23,7 +27,7 @@ public class ProductService implements IProductService {
     @Override
     public Optional<Product> findById(int id) {
         return storage.getProducts().stream()
-                .filter(p -> p.getId() == id)
+                .filter(p -> p.productId() == id)
                 .findFirst();
     }
 
@@ -36,8 +40,8 @@ public class ProductService implements IProductService {
     // --- ADD PRODUCT ---
     @Override
     public void addProduct(Product product) {
-        if (findById(product.getId()).isPresent()) {
-            throw new InvalidSettersException("Product with ID " + product.getId() + " already exists.");
+        if (findById(product.productId()).isPresent()) {
+            throw new InvalidSettersException("Product with ID " + product.productId() + " already exists.");
             }
         storage.addProduct(product);
         }
@@ -53,10 +57,19 @@ public class ProductService implements IProductService {
         }
 
         BigDecimal discountFactor = new BigDecimal(String.valueOf(1.0 - percentage));
-        BigDecimal newPrice = product.getUnitPrice().multiply(discountFactor);
+        BigDecimal newPrice = product.unitPrice().multiply(discountFactor);
 
-        product.setUnitPrice(newPrice);
-        product.setIsDiscounted(true);
+        Product updatedProduct = switch (product) {
+            case FreshProduct fresh -> BaseFreshProduct.copyOf(fresh)
+                    .withUnitPrice(newPrice)
+                    .withIsDiscounted(true);
+            case FrozenProduct frozen -> BaseFrozenProduct.copyOf(frozen)
+                    .withUnitPrice(newPrice)
+                    .withIsDiscounted(true);
+            default -> throw new InvalidSettersException("Unknown product type");
+        };
+
+        storage.updateProduct(product, updatedProduct);
     }
 
     // --- CALCULATE PRICE WITH VAT ---
@@ -66,9 +79,19 @@ public class ProductService implements IProductService {
                 .orElseThrow(() -> new InvalidSettersException("Product with ID " + productId + " not found."));
          
         BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
-        BigDecimal newPrice = product.getUnitPrice().multiply(vatFactor);
+        BigDecimal newPrice = product.unitPrice().multiply(vatFactor);
 
-        product.setUnitPrice(newPrice);
+        // product.unitPrice(newPrice);
+
+        Product updatedProduct = switch (product) {
+            case FreshProduct fresh -> BaseFreshProduct.copyOf(fresh)
+                    .withUnitPrice(newPrice);
+            case FrozenProduct frozen -> BaseFrozenProduct.copyOf(frozen)
+                    .withUnitPrice(newPrice);
+            default -> throw new InvalidSettersException("Unknown product type");
+        };
+
+        storage.updateProduct(product, updatedProduct);
     }
 
     // --- GET PRODUCTS BY TYPE ---

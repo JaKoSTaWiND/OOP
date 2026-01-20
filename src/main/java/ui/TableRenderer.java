@@ -6,7 +6,7 @@ import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.asciitable.CWC_FixedWidth;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import exceptions.EmptyDataException;
-import models.Customer;
+import models.customerModels.Customer;
 import models.employeeModels.Employee;
 import models.productModels.Product;
 
@@ -25,14 +25,14 @@ public class TableRenderer {
 
     for (Product p : products) {
         at.addRow(
-            p.getId(),
+            p.productId(),
             p.getClass().getSimpleName(),
-            p.getName(),
-            p.getUnitPrice() + " USD",
+            p.name(),
+            p.unitPrice() + " USD",
             p.getWeight(),
             p.getTemp(),
             p.getTotalPrice() + " USD",
-            p.getCategory()
+            p.category()
         );
         at.addRule();
     }

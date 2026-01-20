@@ -3,7 +3,7 @@ package interfaces;
 import java.util.List;
 import java.util.Optional;
 
-import models.Customer;
+import models.customerModels.Customer;
 
 public interface ICustomerService {
     void addCustomer(Customer customer);
