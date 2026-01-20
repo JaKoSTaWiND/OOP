@@ -3,11 +3,14 @@ package services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import exceptions.InvalidSettersException;
 import interfaces.ICustomerService;
 import models.Customer;
 import storage.DataStorage;
 
+@Service
 public class CustomerService implements ICustomerService {
     private final DataStorage storage;
 

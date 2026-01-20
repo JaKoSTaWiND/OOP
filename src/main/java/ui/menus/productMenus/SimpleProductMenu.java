@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.ansi;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
@@ -13,16 +15,22 @@ import interfaces.Menu;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
+@Component
 public class SimpleProductMenu extends BaseMenu implements Menu {
     private final IProductService productService;
-    private final Menu freshMenu;
-    private final Menu frozenMenu;
+    private final Menu freshProductMenu;
+    private final Menu frozenProductMenu;
 
-    public SimpleProductMenu(IProductService productService, Menu freshMenu, Menu frozenMenu, Scanner scanner) {
+    public SimpleProductMenu(
+            IProductService productService,
+            @Lazy Menu freshProductMenu,
+            @Lazy Menu frozenProductMenu,
+            Scanner scanner
+        ) {
         super(scanner);
         this.productService = productService;
-        this.freshMenu = freshMenu;
-        this.frozenMenu = frozenMenu;
+        this.freshProductMenu = freshProductMenu;
+        this.frozenProductMenu = frozenProductMenu;
     }
 
     @Override
@@ -62,8 +70,8 @@ public class SimpleProductMenu extends BaseMenu implements Menu {
                         System.out.println(ansi().fgGreen().a("Price with VAT calculated successfully.").reset());
                     }
 
-                    case "8" -> freshMenu.run();
-                    case "9" -> frozenMenu.run();
+                    case "8" -> freshProductMenu.run();
+                    case "9" -> frozenProductMenu.run();
                     case "0" -> back = true;
                 }
             } catch (EmptyDataException | InvalidInputException | InvalidSettersException e) {

@@ -4,10 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import interfaces.IEmployeeService;
 import models.employeeModels.Employee;
 import storage.DataStorage;
 
+@Service
 public class EmployeeService implements IEmployeeService {
     private final DataStorage storage;
 

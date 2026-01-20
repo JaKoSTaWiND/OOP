@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import exceptions.InvalidSettersException;
 import interfaces.IProductService;
 import models.productModels.Product;
 import storage.DataStorage;
 
+@Service
 public class ProductService implements IProductService {
     private final DataStorage storage;
 

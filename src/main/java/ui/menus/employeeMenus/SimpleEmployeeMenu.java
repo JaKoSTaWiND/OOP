@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.ansi;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
@@ -12,13 +14,18 @@ import interfaces.Menu;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
-
+@Component
 public class SimpleEmployeeMenu  extends BaseMenu implements Menu {
     private final IEmployeeService employeeService;
     private final Menu managerEmployeeMenu;
     private final Menu cashierEmployeeMenu;
 
-    public SimpleEmployeeMenu(IEmployeeService employeeService, Menu managerEmployeeMenu, Menu cashierEmployeeMenu, Scanner scanner) {
+    public SimpleEmployeeMenu(
+            IEmployeeService employeeService,
+            @Lazy Menu managerEmployeeMenu,
+            @Lazy Menu cashierEmployeeMenu,
+            Scanner scanner
+        ) {
         super(scanner);
         this.employeeService = employeeService;
         this.managerEmployeeMenu = managerEmployeeMenu;

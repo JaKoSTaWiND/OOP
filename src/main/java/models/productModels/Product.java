@@ -67,26 +67,6 @@ abstract public class Product {
     public String getWeight() { return "-"; }
     public String getTemp() { return "-"; }
 
-    // // ---SET A DISCOUNT ---
-    // public void applyDiscount(double percentage) {
-    //     if (percentage > 0 && percentage <= 1) {
-    //         BigDecimal discountFactor = new BigDecimal(String.valueOf(1.0 - percentage));
-    //         this.unitPrice = this.unitPrice.multiply(discountFactor).setScale(2, RoundingMode.HALF_UP);
-    //         this.isDiscounted = true;
-
-    //         System.out.println("Current unit price: " + this.unitPrice);
-    //         System.out.println("Is discounted: " + true);
-    //     }
-    // }
-
-    // // --- CALCULATE PRICE WITH VAT (НДС) ---
-    // public void calculatePriceWithVAT(double vatRate) {
-    //     BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
-    //     this.unitPrice = unitPrice.multiply(vatFactor).setScale(2, RoundingMode.HALF_UP);
-
-    //     System.out.println("Current unit price: " + this.unitPrice);
-    // }
-
     public String getDefrostAdvice() {
     return "No defrosting needed.";
     }

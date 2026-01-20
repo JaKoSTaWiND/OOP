@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.ansi;
+import org.springframework.stereotype.Component;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
@@ -16,6 +17,7 @@ import models.employeeModels.Employee;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
+@Component
 public class CashierEmployeeMenu extends BaseMenu implements Menu {
     private final IEmployeeService employeeService;
 

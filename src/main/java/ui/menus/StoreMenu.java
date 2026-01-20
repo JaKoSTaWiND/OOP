@@ -4,19 +4,27 @@ import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.ansi;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import interfaces.Menu; 
 
+@Component
 public class StoreMenu extends BaseMenu implements Menu {
-    private final Menu productMenu; 
-    private final Menu employeeMenu;
-    private final Menu customerMenu;
+    private final Menu simpleProductMenu; 
+    private final Menu simpleEmployeeMenu;
+    private final Menu simpleCustomerMenu;
 
-    public StoreMenu(Menu productMenu, Menu employeeMenu, Menu customerMenu, Scanner scanner) {
+    public StoreMenu(
+            @Lazy Menu simpleProductMenu,
+            @Lazy Menu simpleEmployeeMenu,
+            @Lazy Menu simpleCustomerMenu,
+            Scanner scanner
+        ) {
         super(scanner);
-        this.productMenu = productMenu;
-        this.employeeMenu = employeeMenu;
-        this.customerMenu = customerMenu;
+        this.simpleProductMenu = simpleProductMenu;
+        this.simpleEmployeeMenu = simpleEmployeeMenu;
+        this.simpleCustomerMenu = simpleCustomerMenu;
     }
 
     @Override
@@ -38,9 +46,9 @@ public class StoreMenu extends BaseMenu implements Menu {
 
             try {
                 switch (choice) {
-                    case "1" -> productMenu.run(); // Proucts
-                    case "2" -> employeeMenu.run(); // Employees
-                    case "3" -> customerMenu.run(); // Customers
+                    case "1" -> simpleProductMenu.run(); // Products
+                    case "2" -> simpleEmployeeMenu.run(); // Employees
+                    case "3" -> simpleCustomerMenu.run(); // Customers
                     case "0" -> exit = true;
                     default -> System.out.println("Invalid choice.");
                 }

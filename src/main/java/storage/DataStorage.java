@@ -4,12 +4,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import factories.EmployeeFactory;
 import factories.ProductFactory;
 import models.Customer;
 import models.employeeModels.Employee;
 import models.productModels.Product;
 
+@Repository
 public final class DataStorage {
     private final List<Product> products = new ArrayList<>();
     private final List<Employee> employees = new ArrayList<>();

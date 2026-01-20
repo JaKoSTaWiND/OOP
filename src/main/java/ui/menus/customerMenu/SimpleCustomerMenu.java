@@ -1,9 +1,11 @@
 package ui.menus.customerMenu;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
-import static org.fusesource.jansi.Ansi.ansi;
+import org.springframework.stereotype.Component;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
@@ -14,6 +16,7 @@ import models.Customer;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 
+@Component
 public class SimpleCustomerMenu extends BaseMenu implements Menu {
     private final ICustomerService customerService;
 
