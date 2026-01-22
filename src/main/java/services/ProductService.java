@@ -1,6 +1,7 @@
 package services;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +58,7 @@ public class ProductService implements IProductService {
         }
 
         BigDecimal discountFactor = new BigDecimal(String.valueOf(1.0 - percentage));
-        BigDecimal newPrice = product.unitPrice().multiply(discountFactor);
+        BigDecimal newPrice = product.unitPrice().multiply(discountFactor).setScale(2, RoundingMode.HALF_UP);
 
         Product updatedProduct = switch (product) {
             case FreshProduct fresh -> BaseFreshProduct.copyOf(fresh)
@@ -79,9 +80,7 @@ public class ProductService implements IProductService {
                 .orElseThrow(() -> new InvalidSettersException("Product with ID " + productId + " not found."));
          
         BigDecimal vatFactor = new BigDecimal(String.valueOf(1.0 + vatRate));
-        BigDecimal newPrice = product.unitPrice().multiply(vatFactor);
-
-        // product.unitPrice(newPrice);
+        BigDecimal newPrice = product.unitPrice().multiply(vatFactor).setScale(2, RoundingMode.HALF_UP);
 
         Product updatedProduct = switch (product) {
             case FreshProduct fresh -> BaseFreshProduct.copyOf(fresh)

@@ -21,8 +21,8 @@ public class EmployeeService implements IEmployeeService {
     // --- ADD EMPLOYEE ---
     @Override
     public void addEmployee(Employee employee) {
-        if (findById(employee.getId()).isPresent()) {
-            throw new IllegalArgumentException("Employee with ID " + employee.getId() + " already exists.");
+        if (findById(employee.employeeId()).isPresent()) {
+            throw new IllegalArgumentException("Employee with ID " + employee.employeeId() + " already exists.");
         }
         storage.getEmployees().add(employee);
         }
@@ -31,7 +31,7 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public Optional<Employee> findById(int employeeId) {
         return storage.getEmployees().stream()
-                .filter(employee -> employee.getId() == employeeId)
+                .filter(employee -> employee.employeeId() == employeeId)
                 .findFirst();
     }
 

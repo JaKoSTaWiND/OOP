@@ -52,10 +52,11 @@ public class FrozenProductMenu extends BaseMenu implements Menu {
                         int id = readInt("Enter ID: ");
                         String name = readString("Enter name: ");
                         BigDecimal price = readBigDecimal("Enter price: ");
+                        int quantity = readPositiveInt("Enter quantity (pcs): ");
                         int storageTemp = readPositiveInt("Enter storage temperature (°C): ");
                         String category = readString("Enter category: ");
 
-                        Product product = ProductFactory.createFrozenProduct(id, name, price, storageTemp, category);
+                        Product product = ProductFactory.createFrozenProduct(id, name, price, quantity, storageTemp, category);
                         productService.addProduct(product);
                         System.out.println(ansi().fg(Ansi.Color.GREEN).a("Frozen product added successfully").reset());
                     }

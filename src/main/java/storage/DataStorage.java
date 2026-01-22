@@ -1,6 +1,7 @@
 package storage;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,24 +25,22 @@ public final class DataStorage {
 
     public void initData() {
         // --- PRODUCTS ---        
-        products.add(ProductFactory.createFreshProduct(1, "Red Apples", new BigDecimal("3.20"), "Fruits", 1.5));
-        products.add(ProductFactory.createFreshProduct(2, "Beef Steak", new BigDecimal("15.90"), "Meat", 0.8));
+        products.add(ProductFactory.createFreshProduct(1, "Red Apples", new BigDecimal("3.20"), 1.5, "Fruits"));
+        products.add(ProductFactory.createFreshProduct(2, "Beef Steak", new BigDecimal("15.90"), 0.8, "Meat"));
 
-        products.add(ProductFactory.createFrozenProduct(3, "Pizza Quattro", new BigDecimal("6.50"), -18, "Frozen Food"));
-        products.add(ProductFactory.createFrozenProduct(4, "Frozen Berries", new BigDecimal("4.00"), -20, "Desserts"));
-
+        products.add(ProductFactory.createFrozenProduct(3, "Pizza Quattro", new BigDecimal("6.50"), 1.0, -18, "Frozen Food"));
+        products.add(ProductFactory.createFrozenProduct(4, "Frozen Berries", new BigDecimal("4.00"), 3.0, -20, "Desserts"));
 
         // --- EMPLOYEES ---
-        employees.add(EmployeeFactory.createManager(1, "Alex Johnson", new BigDecimal("50.00"), 5));
+        employees.add(EmployeeFactory.createManagerEmployee(1, "Alex Johnson", new BigDecimal("50.00"), "Manager", true, LocalDate.now(), 5));
         
-        employees.add(EmployeeFactory.createCashier(2, "Maria Garcia", new BigDecimal("18.50"), 1));
-        employees.add(EmployeeFactory.createCashier(3, "Ivan Petrov", new BigDecimal("18.50"), 2));
-        
+        employees.add(EmployeeFactory.createCashierEmployee(2, "Maria Garcia", new BigDecimal("18.50"), "Cashier", true, LocalDate.now(), 1));
+        employees.add(EmployeeFactory.createCashierEmployee(3, "Ivan Petrov", new BigDecimal("19.50"), "Cashier", false, LocalDate.now(), 2));
 
-        // --- CUSTOMERS (пока без фабрики, как ты и просил) ---
-        customers.add(new Customer(1, "Alice Cooper", "87771112233", 150, true));
-        customers.add(new Customer(2, "Bob Marley", "87015554433", 40, false));
-        customers.add(new Customer(3, "Charlie Brown", "87479998877", 0, true));
+        // --- CUSTOMERS ---
+        // customers.add(new Customer(1, "Alice Cooper", "87771112233", 150, true));
+        // customers.add(new Customer(2, "Bob Marley", "87015554433", 40, false));
+        // customers.add(new Customer(3, "Charlie Brown", "87479998877", 0, true));
     }
 
 
@@ -60,6 +59,20 @@ public final class DataStorage {
         int index = products.indexOf(oldProduct);
         if (index != -1) {
             products.set(index, newProduct);
+        }
     }
-}
+
+    public void updateEmployee(Employee oldEmployee, Employee newEmployee) {
+        int index = employees.indexOf(oldEmployee);
+        if (index != -1) {
+            employees.set(index, newEmployee);
+        }
+    }
+
+    public void updateCustomer(Customer oldCustomer, Customer newCustomer) {
+        int index = customers.indexOf(oldCustomer);
+        if (index != -1) {
+            customers.set(index, newCustomer);
+        }
+    }
 }

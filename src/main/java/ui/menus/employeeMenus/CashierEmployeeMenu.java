@@ -1,6 +1,7 @@
 package ui.menus.employeeMenus;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
@@ -54,7 +55,7 @@ public class CashierEmployeeMenu extends BaseMenu implements Menu {
                         BigDecimal hourlyRate = readBigDecimal("Enter hourly rate: ");
                         int registerNumbers = readInt("Enter register numbers: ");
 
-                        Employee employee = EmployeeFactory.createCashier(id, name, hourlyRate, registerNumbers);
+                        Employee employee = EmployeeFactory.createCashierEmployee(id, name, hourlyRate, "Cashier", true, LocalDate.now(), registerNumbers);
                         employeeService.addEmployee(employee);
                         System.out.println(ansi().fg(Ansi.Color.GREEN).a("Cashier added successfully").reset());
                     }

@@ -54,10 +54,10 @@ public class FreshProductMenu extends BaseMenu implements Menu {
                         int id = readInt("Enter ID: ");
                         String name = readString("Enter Name: ");
                         BigDecimal price = readBigDecimal("Enter Price Per KG: ");
-                        double weight = readDouble("Enter Weight: ");
+                        double quantity = readDouble("Enter Quantity (KG): ");
                         String category = readString("Enter Category: ");
-                        
-                        Product product = ProductFactory.createFreshProduct(id, name, price, category, weight);
+
+                        Product product = ProductFactory.createFreshProduct(id, name, price, quantity, category);
                         productService.addProduct(product);
                         System.out.println(ansi().fg(Ansi.Color.GREEN).a("Fresh product added successfully").reset());
 

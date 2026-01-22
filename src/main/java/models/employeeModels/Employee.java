@@ -4,68 +4,43 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import exceptions.InvalidSettersException;
+import org.immutables.value.Value;
 
  abstract public class Employee {
-    private int employeeId;
-    private String fullName;
-    private BigDecimal hourlyRate;
-    private String position;
-    private boolean isFullTime;
-    private LocalDate startedAt;
 
-    // --- CONSTRUCTION ---
-    public Employee(int employeeId, String fullName, BigDecimal hourlyRate, String position, boolean isFullTime, LocalDate startedAt) {
-        this.employeeId = employeeId;
-        setFullName(fullName);
-        setHourlyRate(hourlyRate);
-        setPosition(position);
-        setIsFullTime(isFullTime);
-        setStartedAt(startedAt);
+    public abstract int employeeId();
+    public abstract String fullName();
+    public abstract BigDecimal hourlyRate();
+    public abstract String position();
+
+    // --- DEFAULTS ---
+    @Value.Default
+    public boolean isFullTime() {
+        return true;
+    }
+    @Value.Default
+    public LocalDate startedAt() {
+        return LocalDate.now();
     }
 
-    // --- DEFAULT CONSTRUCTION ---
-    public Employee() {
-        this.isFullTime = true;
-        this.startedAt = LocalDate.now();
-    }
-
-    // --- GETTERS ---
-    public int getId() { return employeeId; }
-    public String getFullName() { return fullName; }
-    public BigDecimal getHourlyRate() { return hourlyRate; }
-    public String getPosition() { return position; }
-    public boolean getIsFullTime() { return isFullTime; }
-    public LocalDate getStartedAt() { return startedAt;}
-
-    // --- SETTERS ---
-    public final void setFullName(String fullName) {
-        if (fullName == null || fullName.trim().isEmpty()) {
-            throw new InvalidSettersException("Fullname can not be empty.");
+    // --- VALIDATION ---
+    @Value.Check
+    protected void validateFullName() { // validate fullName
+        if (fullName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Fullname can not be empty.");
         }
-            this.fullName = fullName;
     }
-
-    public final void setHourlyRate(BigDecimal hourlyRate) {
-        if (hourlyRate == null || hourlyRate.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidSettersException("Hourly rate can not be negative or missing.");
+    @Value.Check
+    protected void validateHourlyRate() { // validate hourlyRate
+        if (hourlyRate().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Hourly rate can not be negative.");
         }
-        this.hourlyRate = hourlyRate;
     }
-
-    public final void setPosition(String position) {
-        if (position == null || position.trim().isEmpty()) {
-            throw new InvalidSettersException("Position can not be empty.");
-        }
-        this.position = position;
-    }
-
-    public final void setIsFullTime(boolean isFullTime) {
-        this.isFullTime = isFullTime;
-    }
-
-    public final void setStartedAt(LocalDate startedAt) {
-        this.startedAt = startedAt;
+    @Value.Check
+    protected void validatePosition() { // validate position
+        if (position().trim().isEmpty()) {
+            throw new IllegalArgumentException("Position can not be empty.");
+        }   
     }
 
     public abstract String getRoleSpecificInfo();
@@ -74,20 +49,8 @@ import exceptions.InvalidSettersException;
     // --- CALCULATE EXPERIENCE (YEARS) ---
     public long calculateExperience() {
         LocalDate now = LocalDate.now();
-        long years = ChronoUnit.YEARS.between(this.startedAt, now);
+        long years = ChronoUnit.YEARS.between(startedAt(), now);
         return years;
-    }
-
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "employeeId:" + employeeId +
-                "Full name:" + fullName +
-                "Hourly rate:" + hourlyRate +
-                "Position:" + position +
-                "Is full time:" + isFullTime +
-                "Started at:" + startedAt +
-                "}";
     }
 }
 

@@ -7,26 +7,16 @@ import org.immutables.value.Value;
 @Value.Immutable
 public abstract class FreshProduct extends Product {
 
-    public abstract double weight();
-
     // --- DERIVED ---
     @Value.Derived
     public boolean isBulk() {   // --- CALCULATE BULK ( > 5 kg )
-        return weight() > 5.0;
-    }
-
-    // --- VALIDATION ---
-    @Value.Check
-    protected void checkWeight() {
-        if (weight() <= 0) {
-            throw new IllegalStateException("Weight must be positive");
-        }
+        return quantity() > 5.0;
     }
 
     @Override
     public String getSpecificDetails() {
         StringBuilder details = new StringBuilder();
-        details.append(weight()).append(" kg.");
+        details.append(quantity()).append(" kg.");
 
         if (isBulk()) {
             details.append("(BULK)");
@@ -38,6 +28,6 @@ public abstract class FreshProduct extends Product {
 
     @Override
     public BigDecimal getTotalPrice() {
-        return normalizedPrice().multiply(BigDecimal.valueOf(weight()));
+        return normalizedPrice().multiply(BigDecimal.valueOf(quantity()));
     }
 }

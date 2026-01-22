@@ -26,7 +26,6 @@ public abstract class FrozenProduct extends Product {
     @Override
     public String getSpecificDetails() {
         StringBuilder details = new StringBuilder();
-        details.append(storageTemp()).append(" °C.");
 
         if (isDeepFreeze()) {
             details.append(" (DEEP)");
@@ -38,7 +37,7 @@ public abstract class FrozenProduct extends Product {
 
     @Override
     public BigDecimal getTotalPrice() {
-        return unitPrice();
+        return unitPrice().multiply(BigDecimal.valueOf(quantity()));
     }
     
     @Override

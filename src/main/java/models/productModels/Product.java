@@ -5,8 +5,6 @@ import java.math.RoundingMode;
 
 import org.immutables.value.Value;
 
-import exceptions.InvalidSettersException;
-
 public abstract class Product {
     // protected int productId;
     // protected String name;
@@ -16,6 +14,7 @@ public abstract class Product {
 
     public abstract int productId();
     public abstract String name();
+    public abstract double quantity();
     public abstract BigDecimal unitPrice();
     public abstract String category();
 
@@ -27,16 +26,28 @@ public abstract class Product {
 
     // --- VALIDATION ---
     @Value.Check
-    protected void valildate() {
+    protected void validateName() { // validate name
         if (name().trim().isEmpty()) {
-            throw new InvalidSettersException("Product name cannot be empty.");
+            throw new IllegalArgumentException("Product name cannot be empty.");
         }
+    }
+    @Value.Check
+    protected void validateQuantity() { // validate quantity
+        if (quantity() < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative.");
+        }
+    }
+    @Value.Check
+    protected void validateUnitPrice() { // validate unitPrice
         if (unitPrice().compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidSettersException("Unit price cannot be negative.");
+            throw new IllegalArgumentException("Unit price cannot be negative.");
         }
+    }
+    @Value.Check
+    protected void validateCategory() { // validate category
         if (category().trim().isEmpty()) {
-            throw new InvalidSettersException("Category cannot be empty.");
-        }
+            throw new IllegalArgumentException("Category cannot be empty.");
+        }   
     }
 
     // --- DERIVED ---

@@ -20,7 +20,7 @@ public class TableRenderer {
 
     AsciiTable at = new AsciiTable();
     at.addRule();
-    at.addRow("ID", "TYPE", "NAME", "UNIT PRICE", "WEIGHT", "TEMP", "TOTAL", "CATEGORY");
+    at.addRow("ID", "TYPE", "NAME", "UNIT PRICE", "QUANTITY", "SPECIFIC DETAILS", "TOTAL", "CATEGORY");
     at.addRule();
 
     for (Product p : products) {
@@ -29,8 +29,8 @@ public class TableRenderer {
             p.getClass().getSimpleName(),
             p.name(),
             p.unitPrice() + " USD",
-            p.getWeight(),
-            p.getTemp(),
+            p.quantity(),
+            p.getSpecificDetails(),
             p.getTotalPrice() + " USD",
             p.category()
         );
@@ -42,8 +42,8 @@ public class TableRenderer {
         .add(12) // TYPE
         .add(20) // NAME
         .add(12) // UNIT PRICE
-        .add(10) // WEIGHT
-        .add(10) // TEMP
+        .add(10) // QUANTITY
+        .add(30) // SPECIFIC DETAILS
         .add(12) // TOTAL
         .add(15) // CATEGORY
     );
@@ -65,12 +65,12 @@ public class TableRenderer {
 
         for (Employee e : employees) {
             at.addRow(
-                e.getId(),
-                e.getFullName(), 
-                e.getPosition(), 
-                e.getHourlyRate() + " USD", 
-                e.getIsFullTime(), 
-                e.getStartedAt());
+                e.employeeId(),
+                e.fullName(), 
+                e.position(), 
+                e.hourlyRate() + " USD", 
+                e.isFullTime(), 
+                e.startedAt());
             at.addRule();
         }
 
@@ -100,10 +100,10 @@ public class TableRenderer {
 
         for (Customer c : customers) {
             at.addRow(
-                c.getId(), 
-                c.getFullName(), 
-                c.getPhone(), 
-                c.getLoyaltyPoints(), 
+                c.customerId(),
+                c.fullName(), 
+                c.phone(), 
+                c.loyaltyPoints(), 
                 c.isVip());
             at.addRule();
         }

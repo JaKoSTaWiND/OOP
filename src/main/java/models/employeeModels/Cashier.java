@@ -1,45 +1,45 @@
 package models.employeeModels;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
-import exceptions.InvalidSettersException;
+import org.immutables.value.Value;
 
-public class Cashier extends Employee {
-    private int registerNumber;
-    private int shiftCount;
+@Value.Immutable
+public abstract class Cashier extends Employee {
 
-    public Cashier(int employeeId, String fullName, BigDecimal hourlyRate, LocalDate startedAt, int registerNumber) {
-        super(employeeId, fullName, hourlyRate, "Cashier", true, startedAt);
-        setRegisterNumber(registerNumber);
-        this.shiftCount = 0;
-    }
+    public abstract int registerNumber();
+    public abstract int shiftCount();
 
-    public int getRegisterNumber() { return registerNumber; }
-
-    public final void setRegisterNumber(int num) {
-        if (num <= 0) {
-            throw new InvalidSettersException("Register number must be a positive integer!");
+    // --- VALIDATION ---
+    @Value.Check
+    protected void validateRegisterNumber() { // validate registerNumber
+        if (registerNumber() <= 0) {
+            throw new IllegalArgumentException("Register number must be a positive integer!");
         }
-        this.registerNumber = num;
+    }
+    @Value.Check
+    protected void validateShiftCount() { // validate shiftCount
+        if (shiftCount() < 0) {
+            throw new IllegalArgumentException("Shift count cannot be negative!");
+        }
     }
 
-    public void openRegister() {
-        this.shiftCount++;
-        System.out.println("Cashier " + getFullName() + " opened register #" + registerNumber);
+
+    public Cashier withIncrementedShift() {
+        return BaseCashier.copyOf(this).withShiftCount(shiftCount() + 1);
     }
 
     public boolean isExpertCashier() {
-        return calculateExperience() >= 1 && shiftCount > 50;
+        return calculateExperience() >= 1 && shiftCount() > 50;
     }
 
     @Override
     public String getRoleSpecificInfo() {
-        return String.format("Register: %d | Shifts: %d", registerNumber, shiftCount);
+        return String.format("Register: %d | Shifts: %d", registerNumber(), shiftCount());
     }
 
     @Override
     public BigDecimal calculateFinalSalary(int workedHours) {
-        return getHourlyRate().multiply(new BigDecimal(workedHours));
+        return hourlyRate().multiply(new BigDecimal(workedHours));
     }
 }
