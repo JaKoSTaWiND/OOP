@@ -3,7 +3,9 @@ package models.customerModels;
 import org.immutables.value.Value;
 
 import exceptions.InvalidSettersException;
+import models.ImmutableStyle;
 
+@ImmutableStyle
 @Value.Immutable
 public abstract class Customer {
 

@@ -1,4 +1,4 @@
-package interfaces;
+package interfaces.product;
 
 import java.util.List;
 import java.util.Optional;

@@ -20,7 +20,7 @@ public class TableRenderer {
 
     AsciiTable at = new AsciiTable();
     at.addRule();
-    at.addRow("ID", "TYPE", "NAME", "UNIT PRICE", "QUANTITY", "SPECIFIC DETAILS", "TOTAL", "CATEGORY");
+    at.addRow("ID", "TYPE", "NAME", "UNIT PRICE", "QUANTITY", "IS DISCOUNTED","SPECIFIC DETAILS", "TOTAL", "CATEGORY");
     at.addRule();
 
     for (Product p : products) {
@@ -30,6 +30,7 @@ public class TableRenderer {
             p.name(),
             p.unitPrice() + " USD",
             p.quantity(),
+            p.isDiscounted() ? "YES" : "NO",
             p.getSpecificDetails(),
             p.getTotalPrice() + " USD",
             p.category()
@@ -43,6 +44,7 @@ public class TableRenderer {
         .add(20) // NAME
         .add(12) // UNIT PRICE
         .add(10) // QUANTITY
+        .add(6) // IS DISCOUNTED
         .add(30) // SPECIFIC DETAILS
         .add(12) // TOTAL
         .add(15) // CATEGORY

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
 import exceptions.InvalidSettersException;
-import interfaces.IProductService;
 import interfaces.Menu;
+import interfaces.product.IProductService;
 import ui.TableRenderer;
 import ui.menus.BaseMenu;
 

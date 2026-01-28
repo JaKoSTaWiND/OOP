@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import interfaces.Menu;
 import ui.menus.StoreMenu;
 
-@SpringBootApplication(scanBasePackages = {"app", "services", "storage", "ui", "interfaces"})
+@SpringBootApplication(scanBasePackages = {"app", "services", "storage", "repositories","ui", "interfaces"})
 public class Main implements CommandLineRunner {
     private final ApplicationContext context;
 
@@ -37,7 +37,7 @@ public class Main implements CommandLineRunner {
 
 /*
     * [ + ] Spring Boot
-    * [ ] Immutables
+    * [ + ] Immutables
     * [ ] Flyway
     * [ ] JOOQ
 

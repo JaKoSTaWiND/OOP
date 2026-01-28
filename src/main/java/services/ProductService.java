@@ -6,49 +6,46 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import exceptions.InvalidSettersException;
-import interfaces.IProductService;
+import interfaces.product.IProductRepository;
+import interfaces.product.IProductService;
 import models.productModels.BaseFreshProduct;
 import models.productModels.BaseFrozenProduct;
 import models.productModels.FreshProduct;
 import models.productModels.FrozenProduct;
 import models.productModels.Product;
-import storage.DataStorage;
 
 @Service
 public class ProductService implements IProductService {
-    private final DataStorage storage;
+    
+    private final IProductRepository repository;
 
-    public ProductService(DataStorage storage) {
-        this.storage = storage;
+    public ProductService(IProductRepository repository) {
+        this.repository = repository;
     }
 
-    // --- FIND PRODUCT BY ID ---
     @Override
     public Optional<Product> findById(int id) {
-        return storage.getProducts().stream()
-                .filter(p -> p.productId() == id)
-                .findFirst();
+        return repository.findById(id);
     }
 
-    // --- GET ALL PRODUCTS ---
     @Override
     public List<Product> getAllProducts() {
-        return storage.getProducts();
+        return repository.getAllProducts();
     }
 
-    // --- ADD PRODUCT ---
     @Override
     public void addProduct(Product product) {
-        if (findById(product.productId()).isPresent()) {
+        if (repository.findById(product.productId()).isPresent()) {
             throw new InvalidSettersException("Product with ID " + product.productId() + " already exists.");
-            }
-        storage.addProduct(product);
         }
+        repository.save(product);
+    }
 
-    // --- APPLY DISCOUNT ---
     @Override
+    @Transactional
     public void applyDiscount(int productId, double percentage) {
         Product product = findById(productId)
                 .orElseThrow(() -> new InvalidSettersException("Product with ID " + productId + " not found."));
@@ -57,7 +54,7 @@ public class ProductService implements IProductService {
             throw new InvalidSettersException("Discount percentage must be between 0 and 100.");
         }
 
-        BigDecimal discountFactor = new BigDecimal(String.valueOf(1.0 - percentage));
+        BigDecimal discountFactor = new BigDecimal(String.valueOf(1.0 - percentage / 100.0));
         BigDecimal newPrice = product.unitPrice().multiply(discountFactor).setScale(2, RoundingMode.HALF_UP);
 
         Product updatedProduct = switch (product) {
@@ -70,11 +67,11 @@ public class ProductService implements IProductService {
             default -> throw new InvalidSettersException("Unknown product type");
         };
 
-        storage.updateProduct(product, updatedProduct);
+        repository.update(updatedProduct);
     }
 
-    // --- CALCULATE PRICE WITH VAT ---
     @Override
+    @Transactional
     public void calculatePriceWithVAT(int productId, double vatRate) {
         Product product = findById(productId)
                 .orElseThrow(() -> new InvalidSettersException("Product with ID " + productId + " not found."));
@@ -90,13 +87,12 @@ public class ProductService implements IProductService {
             default -> throw new InvalidSettersException("Unknown product type");
         };
 
-        storage.updateProduct(product, updatedProduct);
+        repository.update(updatedProduct);
     }
 
-    // --- GET PRODUCTS BY TYPE ---
     @Override
-    public List<Product> getProductsByType(Class<? extends Product> type) { // Get products by their child class
-        return storage.getProducts().stream()
+    public List<Product> getProductsByType(Class<? extends Product> type) {
+        return repository.getAllProducts().stream()
                 .filter(type::isInstance)
                 .toList();
     }

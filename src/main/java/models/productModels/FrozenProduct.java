@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 import org.immutables.value.Value;
 
+import models.ImmutableStyle;
+
+@ImmutableStyle
 @Value.Immutable
 public abstract class FrozenProduct extends Product {
 

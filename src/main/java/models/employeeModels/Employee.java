@@ -6,6 +6,9 @@ import java.time.temporal.ChronoUnit;
 
 import org.immutables.value.Value;
 
+import models.ImmutableStyle;
+
+@ImmutableStyle
  abstract public class Employee {
 
     public abstract int employeeId();

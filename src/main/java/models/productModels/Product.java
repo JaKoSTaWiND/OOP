@@ -5,6 +5,9 @@ import java.math.RoundingMode;
 
 import org.immutables.value.Value;
 
+import models.ImmutableStyle;
+
+@ImmutableStyle
 public abstract class Product {
     // protected int productId;
     // protected String name;
