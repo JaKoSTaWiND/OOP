@@ -9,6 +9,10 @@ public interface IProductService {
     void addProduct(Product product);
     List<Product> getAllProducts();
     Optional<Product> findById(int id);
+    Optional<Product> findByName(String name);
+
+    void updateProduct(Product product);
+    void deleteProduct(int id);
     
     void applyDiscount(int productId, double percentage);
     void calculatePriceWithVAT(int productId, double vatRate);

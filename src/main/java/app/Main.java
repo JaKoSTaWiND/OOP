@@ -13,6 +13,17 @@ import ui.menus.StoreMenu;
 
 @SpringBootApplication(scanBasePackages = {"app", "services", "storage", "repositories","ui", "interfaces"})
 public class Main implements CommandLineRunner {
+    /**
+     * drop and recreate schema public ->
+     * DROP SCHEMA public CASCADE;
+     * CREATE SCHEMA public;
+     * 
+     * flyway migrate ->
+     * mvn clean flyway:migrate
+     * 
+     * jooq code generation ->
+     * mvn clean jooq-codegen:generate
+     */
     private final ApplicationContext context;
 
     public Main(ApplicationContext context) {
@@ -25,6 +36,13 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        /**
+         * database ->
+         * repository (jooq) | used for SQL queries -> 
+         * services | logic for console input and classes methods ->
+         * ui | output to console data and get inputs from user
+         */
+
         Menu mainMenu = context.getBean(StoreMenu.class);
         mainMenu.run();
     }
@@ -36,9 +54,8 @@ public class Main implements CommandLineRunner {
 }
 
 /*
-    * [ + ] Spring Boot
-    * [ + ] Immutables
-    * [ ] Flyway
-    * [ ] JOOQ
-
+[ + ] Spring Boot
+[ + ] Immutables
+[ + ] Flyway
+[ + ] JOOQ
 */

@@ -32,6 +32,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public Optional<Product> findByName(String name) {
+        if (name == null || name.isBlank()) {
+            return Optional.empty();
+        }
+        return repository.findByName(name);
+    }
+
+    @Override
     public List<Product> getAllProducts() {
         return repository.getAllProducts();
     }
@@ -44,6 +52,29 @@ public class ProductService implements IProductService {
         repository.save(product);
     }
 
+    @Override
+    public void deleteProduct(int id) {
+        if (repository.findById(id).isEmpty()) {
+            throw new InvalidSettersException("Product with ID " + id + " not found.");
+        }
+        repository.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void updateProduct(Product product) {
+        if (product.productId() <= 0) {
+            throw new InvalidSettersException("Invalid product ID for update.");
+        }
+
+        if (repository.findById(product.productId()).isEmpty()) {
+            throw new InvalidSettersException("Product with ID " + product.productId() + " does not exist.");
+        }
+
+        repository.update(product);
+    }
+
+    // --- APPLY DISCOUNT ---
     @Override
     @Transactional
     public void applyDiscount(int productId, double percentage) {
@@ -70,6 +101,7 @@ public class ProductService implements IProductService {
         repository.update(updatedProduct);
     }
 
+    // --- CALCULATE PRICE WITH VAT ---
     @Override
     @Transactional
     public void calculatePriceWithVAT(int productId, double vatRate) {

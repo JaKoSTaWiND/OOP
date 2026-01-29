@@ -40,6 +40,21 @@ public class JooqProductRepository implements IProductRepository {
     }
 
     @Override
+    public Optional<Product> findByName(String name) {
+        return dsl.selectFrom(PRODUCTS)
+                .where(PRODUCTS.NAME.equalIgnoreCase(name)) // Xyyy = xyyy = XYYY
+                .fetchOptional()
+                .map(this::mapRecordToProduct);
+    }
+
+    /**
+    * Use for saving products in the database by
+    * checking product type by instanceof and setting
+    * product_type_id = 1 for FreshProduct and 2 for FrozenProduct
+    * then mapping values from object to columns by:
+    * .set(PRODUCTS.COLUMN, product.getField());
+    */
+    @Override
     public void save(Product product) {
         if (product == null) {
             throw new IllegalArgumentException("Product cannot be null");
@@ -53,18 +68,38 @@ public class JooqProductRepository implements IProductRepository {
                 .set(PRODUCTS.CATEGORY, product.category())
                 .set(PRODUCTS.ISDISCONTINUED, product.isDiscounted())
                 .set(PRODUCTS.STORAGETEMP, product instanceof FrozenProduct f 
-                     ? BigDecimal.valueOf(f.storageTemp()) : null)
+                     ? BigDecimal.valueOf(f.storageTemp()) : null) // if FrozenProduct set storageTemp else null
                 .execute();
     }
 
+
+    /**
+     * Use for updating products in the database by
+     * setting updateStep all columns and finding product by Id
+     * then update value in chosen column by .PRODUCTS.COLUMN(value) = newValue
+     * and for all unchanged columns -> PRODUCTS.COLUMN(value) = value
+     */
     @Override
     public void update(Product product) {
-        dsl.update(PRODUCTS)
+        var updateStep = dsl.update(PRODUCTS)
+                .set(PRODUCTS.NAME, product.name())
                 .set(PRODUCTS.UNITPRICE, product.unitPrice())
                 .set(PRODUCTS.QUANTITY, BigDecimal.valueOf(product.quantity()))
-                .set(PRODUCTS.ISDISCONTINUED, product.isDiscounted())
-                .where(PRODUCTS.ID.eq(product.productId()))
+                .set(PRODUCTS.CATEGORY, product.category())
+                .set(PRODUCTS.ISDISCONTINUED, product.isDiscounted());
+
+        if (product instanceof FrozenProduct frozen) { // check for FrozenProduct
+            updateStep = updateStep.set(PRODUCTS.STORAGETEMP, BigDecimal.valueOf(frozen.storageTemp()));
+        } else {
+            updateStep = updateStep.set(PRODUCTS.STORAGETEMP, (BigDecimal) null);
+        }
+
+        int rows = updateStep.where(PRODUCTS.ID.eq(product.productId())) // update value by found productId
                 .execute();
+
+        if (rows == 0) {
+            throw new RuntimeException("Update failed: Product with ID " + product.productId() + " not found.");
+        }
     }
 
     @Override
@@ -74,6 +109,13 @@ public class JooqProductRepository implements IProductRepository {
                 .execute();
     }
 
+    /**
+     * Use for searching products by getting Optional<Product> from query
+     * and creating objects by ProductFactory based on @code product_type_id,
+     * where 1 = FreshProduct and 2 = FrozenProduct.
+     * mapping values from record to object fields by:
+     * .map(this::mapRecordToProduct);
+     */
     private Product mapRecordToProduct(ProductsRecord record) {
         return switch (record.getProductTypeId()) {
             case 1 -> ProductFactory.createFreshProduct(

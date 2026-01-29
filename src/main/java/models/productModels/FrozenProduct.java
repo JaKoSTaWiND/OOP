@@ -1,6 +1,7 @@
 package models.productModels;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.immutables.value.Value;
 
@@ -40,7 +41,7 @@ public abstract class FrozenProduct extends Product {
 
     @Override
     public BigDecimal getTotalPrice() {
-        return unitPrice().multiply(BigDecimal.valueOf(quantity()));
+        return unitPrice().multiply(BigDecimal.valueOf(quantity())).setScale(2, RoundingMode.HALF_UP);
     }
     
     @Override
