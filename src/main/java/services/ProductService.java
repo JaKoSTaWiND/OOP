@@ -78,7 +78,6 @@ public class ProductService implements IProductService {
      * Adds a new product to the system.
      * 
      * @param product the product entity to persist.
-     * @throws InvalidSettersException if a product with the same ID already exists.
      */
     @Override
     public void addProduct(Product product) {
@@ -88,6 +87,11 @@ public class ProductService implements IProductService {
         repository.save(product);
     }
 
+    /**
+     * Removes an product record from the system.
+     * 
+     * @param id the ID of the product to dismiss.
+     */
     @Override
     public void deleteProduct(int id) {
         if (repository.findById(id).isEmpty()) {
@@ -96,6 +100,11 @@ public class ProductService implements IProductService {
         repository.delete(id);
     }
 
+    /**
+     * Updates an existing product's information.
+     * 
+     * @param product the product instance with modified data.
+     */
     @Override
     @Transactional
     public void updateProduct(Product product) {

@@ -1,4 +1,4 @@
-package interfaces;
+package interfaces.employee;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -7,9 +7,13 @@ import java.util.Optional;
 import models.employeeModels.Employee;
 
 public interface IEmployeeService {
-    void addEmployee(Employee employee);
     List<Employee> getAllEmployees();
     Optional<Employee> findById(int employeeId);
+    Optional<Employee> findByName(String name);
+
+    void addEmployee(Employee employee);
+    void updateEmployee(Employee employee);
+    void deleteEmployee(int id);
     
     BigDecimal calculatePayroll(int employeeId, int workedHours, double bonus);
 

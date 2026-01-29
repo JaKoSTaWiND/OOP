@@ -48,42 +48,40 @@ public class FrozenProductMenu extends AbstractProductMenu implements Menu {
                 switch (choice) {
                     case "1" -> TableRenderer.printProductTable(productService.getProductsByType(FrozenProduct.class)); // list all frozen products
 
-                    /**
-                     * {@link AbstractProductMenu}
-                     */
                     case "2" -> handleAddProduct("FROZEN", (name, price, qty, cat) -> {
                         int temp = readInt("Enter storage temperature (°C): "); // addition field for frozen product
                         return ProductFactory.createFrozenProduct(0, name, price, qty, temp, cat);
                     }); // add new frozen product
 
-                    /**
-                     * {@link AbstractProductMenu}
-                     */
-                    case "3" -> handleDeleteProduct(productService, FrozenProduct.class); // delete frozen product
+                    case "3" -> handleDeleteProduct(FrozenProduct.class); // delete frozen product
 
                     case "4" -> { // update frozen product
                         System.out.println(ansi().bold().fgCyan().a("--- UPDATE FROZEN PRODUCT ---").reset());
 
-                        /**
-                         * {@link AbstractProductMenu}
-                         */
-                        findProductForUpdate(productService, FrozenProduct.class).ifPresentOrElse(frozen -> {
+                        findProductForUpdate(FrozenProduct.class).ifPresentOrElse(frozen -> {
                             System.out.println(ansi().fgYellow().bold().a("Editing: ").reset().a(frozen.name()));
                             System.out.println("1. Name | 2. Price | 3. Qty | 4. Temp | 5. Category");
                             String field = scanner.nextLine();
 
                             try {
                                 Product updated = switch (field) {
-                                    case "1" -> BaseFrozenProduct.copyOf(frozen).withName(readString("New Name: "));
-                                    case "2" -> BaseFrozenProduct.copyOf(frozen).withUnitPrice(readBigDecimal("New Price: "));
-                                    case "3" -> BaseFrozenProduct.copyOf(frozen).withQuantity(readDouble("New Quantity: "));
-                                    case "4" -> BaseFrozenProduct.copyOf(frozen).withStorageTemp(readInt("New Temp: "));
-                                    case "5" -> BaseFrozenProduct.copyOf(frozen).withCategory(readString("New Category: "));
+                                    case "1" -> BaseFrozenProduct.copyOf(frozen)
+                                            .withName(readString("New Name: "));
+                                    case "2" -> BaseFrozenProduct.copyOf(frozen)
+                                            .withUnitPrice(readBigDecimal("New Price: "));
+                                    case "3" -> BaseFrozenProduct.copyOf(frozen)
+                                            .withQuantity(readDouble("New Quantity: "));
+                                    case "4" -> BaseFrozenProduct.copyOf(frozen)
+                                            .withStorageTemp(readInt("New Temp: "));
+                                    case "5" -> BaseFrozenProduct.copyOf(frozen)
+                                            .withCategory(readString("New Category: "));
                                     default -> frozen;
                                 };
                                 
-                                productService.updateProduct(updated);
-                                System.out.println(ansi().fgGreen().a("Updated successfully!").reset());
+                                if (updated != frozen) {
+                                    productService.updateProduct(updated);
+                                    System.out.println(ansi().fgGreen().a("Product updated successfully!").reset());
+                                }
                             } catch (InvalidInputException e) {
                                 System.out.println(ansi().fgRed().a(e.getMessage()).reset());
                             }

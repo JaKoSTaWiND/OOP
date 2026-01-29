@@ -2,6 +2,7 @@ package repositories;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.jooq.DSLContext;
@@ -76,8 +77,7 @@ public class JooqProductRepository implements IProductRepository {
      * This method maps common {@link Product} attributes to database columns. 
      * It uses a simple type-mapping strategy where {@code FreshProduct} is assigned 
      * type ID {@code 1} and {@code FrozenProduct} is assigned type ID {@code 2}.
-     * Special fields like {@code storageTemp} are handled conditionally based on 
-     * the concrete instance type.
+     * Uses pattern matching to handle type-specific fields.
      * </p>
      *
      * @param product the product instance to be saved.
@@ -88,16 +88,27 @@ public class JooqProductRepository implements IProductRepository {
             throw new IllegalArgumentException("Product cannot be null");
         }
 
-        dsl.insertInto(PRODUCTS)
-                .set(PRODUCTS.PRODUCT_TYPE_ID, product instanceof FreshProduct ? 1 : 2)
+        var insertStep = dsl.insertInto(PRODUCTS)
                 .set(PRODUCTS.NAME, product.name())
                 .set(PRODUCTS.UNITPRICE, product.unitPrice())
                 .set(PRODUCTS.QUANTITY, BigDecimal.valueOf(product.quantity()))
                 .set(PRODUCTS.CATEGORY, product.category())
-                .set(PRODUCTS.ISDISCONTINUED, product.isDiscounted())
-                .set(PRODUCTS.STORAGETEMP, product instanceof FrozenProduct f 
-                     ? BigDecimal.valueOf(f.storageTemp()) : null) // if FrozenProduct set storageTemp else null
-                .execute();
+                .set(PRODUCTS.ISDISCONTINUED, product.isDiscounted());
+
+        switch (product) {
+            case FreshProduct freshProduct -> {
+                Objects.requireNonNull(freshProduct); // to disable warning
+                insertStep = insertStep.set(PRODUCTS.PRODUCT_TYPE_ID, 1)
+                          .set(PRODUCTS.STORAGETEMP, (BigDecimal) null);
+            }
+            case FrozenProduct frozenProduct -> {
+                insertStep = insertStep.set(PRODUCTS.PRODUCT_TYPE_ID, 2)
+                          .set(PRODUCTS.STORAGETEMP, BigDecimal.valueOf(frozenProduct.storageTemp()));
+            }
+            default -> throw new IllegalArgumentException("Unsupported product type: " + product.getClass());
+        }
+
+        insertStep.execute();
     }
 
 
@@ -114,6 +125,10 @@ public class JooqProductRepository implements IProductRepository {
      */
     @Override
     public void update(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null");
+        }
+
         var updateStep = dsl.update(PRODUCTS)
                 .set(PRODUCTS.NAME, product.name())
                 .set(PRODUCTS.UNITPRICE, product.unitPrice())
@@ -121,13 +136,20 @@ public class JooqProductRepository implements IProductRepository {
                 .set(PRODUCTS.CATEGORY, product.category())
                 .set(PRODUCTS.ISDISCONTINUED, product.isDiscounted());
 
-        if (product instanceof FrozenProduct frozen) { // check for FrozenProduct
-            updateStep = updateStep.set(PRODUCTS.STORAGETEMP, BigDecimal.valueOf(frozen.storageTemp()));
-        } else {
-            updateStep = updateStep.set(PRODUCTS.STORAGETEMP, (BigDecimal) null);
+        switch (product) {
+            case FreshProduct freshProduct -> {
+                Objects.requireNonNull(freshProduct); // to disable warning
+                updateStep = updateStep.set(PRODUCTS.PRODUCT_TYPE_ID, 1)
+                          .set(PRODUCTS.STORAGETEMP, (BigDecimal) null);
+            }
+            case FrozenProduct frozenProduct -> {
+                updateStep = updateStep.set(PRODUCTS.PRODUCT_TYPE_ID, 2)
+                          .set(PRODUCTS.STORAGETEMP, BigDecimal.valueOf(frozenProduct.storageTemp()));
+            }
+            default -> throw new IllegalArgumentException("Unsupported product type");
         }
 
-        int rows = updateStep.where(PRODUCTS.ID.eq(product.productId())) // update value by found productId
+        int rows = updateStep.where(PRODUCTS.ID.eq(product.productId()))
                 .execute();
 
         if (rows == 0) {
@@ -180,7 +202,7 @@ public class JooqProductRepository implements IProductRepository {
                         record.getName(),
                         record.getUnitprice(),
                         record.getQuantity().doubleValue(),
-                        record.getStoragetemp() != null ? record.getStoragetemp().intValue() : 0,
+                        Objects.requireNonNullElse(record.getStoragetemp(), BigDecimal.ZERO).intValue(),
                         record.getCategory(),
                         record.getIsdiscontinued()
                     );

@@ -9,14 +9,12 @@ import org.springframework.stereotype.Component;
 
 import exceptions.EmptyDataException;
 import exceptions.InvalidInputException;
-import interfaces.IEmployeeService;
 import interfaces.Menu;
+import interfaces.employee.IEmployeeService;
 import ui.TableRenderer;
-import ui.menus.BaseMenu;
 
 @Component
-public class SimpleEmployeeMenu  extends BaseMenu implements Menu {
-    private final IEmployeeService employeeService;
+public class SimpleEmployeeMenu  extends AbstractEmployeeMenu implements Menu {
     private final Menu managerEmployeeMenu;
     private final Menu cashierEmployeeMenu;
 
@@ -26,8 +24,7 @@ public class SimpleEmployeeMenu  extends BaseMenu implements Menu {
             @Lazy Menu cashierEmployeeMenu,
             Scanner scanner
         ) {
-        super(scanner);
-        this.employeeService = employeeService;
+        super(scanner, employeeService);
         this.managerEmployeeMenu = managerEmployeeMenu;
         this.cashierEmployeeMenu = cashierEmployeeMenu;
     }

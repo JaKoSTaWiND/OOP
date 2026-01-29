@@ -65,7 +65,6 @@ public abstract class AbstractProductMenu extends BaseMenu {
          * @param qty      the gathered quantity.
          * @param category the gathered category string.
          * @return a concrete implementation of {@link Product}.
-         * @throws InvalidInputException if additional data gathered within the creator is invalid.
          */
         Product createProduct(String name, BigDecimal price, double qty, String category) throws InvalidInputException;
     }
@@ -84,7 +83,7 @@ public abstract class AbstractProductMenu extends BaseMenu {
      * @param allowedType    the specific class of {@link Product} permitted for deletion 
      * in the current menu context.
      */
-    protected void handleDeleteProduct(IProductService productService, Class<? extends Product> allowedType) throws InvalidInputException {
+    protected void handleDeleteProduct(Class<? extends Product> allowedType) throws InvalidInputException {
         System.out.println(ansi().bold().fgCyan().a("\n--- DELETE PRODUCT ---").reset());
         System.out.println("""
         1. By ID
@@ -96,7 +95,7 @@ public abstract class AbstractProductMenu extends BaseMenu {
 
         if (choice.equals("1")) {
             int id = readInt("Enter ID to delete: ");
-            idToDelete = productService.findById(id) // search by ID
+            idToDelete = productService.findById(id) 
                     .filter(allowedType::isInstance)
                     .map(Product::productId)
                     .orElse(-1);
@@ -118,13 +117,18 @@ public abstract class AbstractProductMenu extends BaseMenu {
 
     /**
      * Generic product search logic for the update flow.
-     * Ensures the product exists and matches the expected type.
-     * @param productService the service used for database operations.
+     * Ensures the product exists and matches the expected type using the internal product service.
+     * 
+     * @param <T>         the specific subtype of {@link Product} being searched.
      * @param allowedType the specific class of {@link Product} permitted for update in the current menu context.
      * @return an {@link Optional} containing the found product of the correct type, or empty if not found or type mismatch.
      */
-    protected <T extends Product> Optional<T> findProductForUpdate(IProductService productService, Class<T> allowedType) throws InvalidInputException {
-        System.out.println("Find by: 1. ID | 2. Name");
+    protected <T extends Product> Optional<T> findProductForUpdate(Class<T> allowedType) throws InvalidInputException {
+        System.out.println("""
+        Find by:
+        1. ID
+        2. Name
+        """);
         String choice = scanner.nextLine();
 
         Optional<Product> found = (choice.equals("1")) 

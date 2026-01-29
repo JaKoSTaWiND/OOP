@@ -6,11 +6,11 @@ import java.util.Optional;
 import models.productModels.Product;
 
 public interface IProductService {
-    void addProduct(Product product);
     List<Product> getAllProducts();
     Optional<Product> findById(int id);
     Optional<Product> findByName(String name);
 
+    void addProduct(Product product);
     void updateProduct(Product product);
     void deleteProduct(int id);
     

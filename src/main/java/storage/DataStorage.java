@@ -1,14 +1,10 @@
 package storage;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import factories.EmployeeFactory;
-import factories.ProductFactory;
 import models.customerModels.Customer;
 import models.employeeModels.Employee;
 import models.productModels.Product;
@@ -24,18 +20,18 @@ public final class DataStorage {
     }
 
     public void initData() {
-        // --- PRODUCTS ---        
-        products.add(ProductFactory.createFreshProduct(1, "Red Apples", new BigDecimal("3.20"), 1.5, "Fruits"));
-        products.add(ProductFactory.createFreshProduct(2, "Beef Steak", new BigDecimal("15.90"), 0.8, "Meat"));
+        // // --- PRODUCTS ---        
+        // products.add(ProductFactory.createFreshProduct(1, "Red Apples", new BigDecimal("3.20"), 1.5, "Fruits"));
+        // products.add(ProductFactory.createFreshProduct(2, "Beef Steak", new BigDecimal("15.90"), 0.8, "Meat"));
 
-        products.add(ProductFactory.createFrozenProduct(3, "Pizza Quattro", new BigDecimal("6.50"), 1.0, -18, "Frozen Food"));
-        products.add(ProductFactory.createFrozenProduct(4, "Frozen Berries", new BigDecimal("4.00"), 3.0, -20, "Desserts"));
+        // products.add(ProductFactory.createFrozenProduct(3, "Pizza Quattro", new BigDecimal("6.50"), 1.0, -18, "Frozen Food"));
+        // products.add(ProductFactory.createFrozenProduct(4, "Frozen Berries", new BigDecimal("4.00"), 3.0, -20, "Desserts"));
 
-        // --- EMPLOYEES ---
-        employees.add(EmployeeFactory.createManagerEmployee(1, "Alex Johnson", new BigDecimal("50.00"), "Manager", true, LocalDate.now(), 5));
+        // // --- EMPLOYEES ---
+        // employees.add(EmployeeFactory.createManagerEmployee(1, "Alex Johnson", new BigDecimal("50.00"), "Manager", true, LocalDate.now(), 5));
         
-        employees.add(EmployeeFactory.createCashierEmployee(2, "Maria Garcia", new BigDecimal("18.50"), "Cashier", true, LocalDate.now(), 1));
-        employees.add(EmployeeFactory.createCashierEmployee(3, "Ivan Petrov", new BigDecimal("19.50"), "Cashier", false, LocalDate.now(), 2));
+        // employees.add(EmployeeFactory.createCashierEmployee(2, "Maria Garcia", new BigDecimal("18.50"), "Cashier", true, LocalDate.now(), 1));
+        // employees.add(EmployeeFactory.createCashierEmployee(3, "Ivan Petrov", new BigDecimal("19.50"), "Cashier", false, LocalDate.now(), 2));
 
         // --- CUSTOMERS ---
         // customers.add(new Customer(1, "Alice Cooper", "87771112233", 150, true));
