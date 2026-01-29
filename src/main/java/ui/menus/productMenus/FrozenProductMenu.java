@@ -1,7 +1,5 @@
 package ui.menus.productMenus;
 
-import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
@@ -17,15 +15,12 @@ import models.productModels.BaseFrozenProduct;
 import models.productModels.FrozenProduct;
 import models.productModels.Product;
 import ui.TableRenderer;
-import ui.menus.BaseMenu;
 
 @Component
-public class FrozenProductMenu extends BaseMenu implements Menu {
-    private final IProductService productService;
+public class FrozenProductMenu extends AbstractProductMenu implements Menu {
 
     public FrozenProductMenu(IProductService productService, Scanner scanner) {
-        super(scanner);
-        this.productService = productService;
+        super(scanner, productService);
     }
 
     @Override
@@ -53,87 +48,46 @@ public class FrozenProductMenu extends BaseMenu implements Menu {
                 switch (choice) {
                     case "1" -> TableRenderer.printProductTable(productService.getProductsByType(FrozenProduct.class)); // list all frozen products
 
-                    case "2" -> { // add new frozen product
-                        System.out.println(ansi().bold().fg(Ansi.Color.CYAN).a("--- ADD NEW FROZEN PRODUCT ---").reset());
-                        
-                        String name = readString("Enter name: ");
-                        BigDecimal price = readBigDecimal("Enter price: ");
-                        double quantity = readDouble("Enter quantity: ");
-                        int storageTemp = readInt("Enter storage temperature (°C): ");
-                        String category = readString("Enter category: ");
+                    /**
+                     * {@link AbstractProductMenu}
+                     */
+                    case "2" -> handleAddProduct("FROZEN", (name, price, qty, cat) -> {
+                        int temp = readInt("Enter storage temperature (°C): "); // addition field for frozen product
+                        return ProductFactory.createFrozenProduct(0, name, price, qty, temp, cat);
+                    }); // add new frozen product
 
-                        Product product = ProductFactory.createFrozenProduct(0, name, price, quantity, storageTemp, category);
-                        
-                        productService.addProduct(product);
-                        System.out.println(ansi().fgGreen().bold().a("Frozen Product added to database").reset());
-                    }
-                    
-                    case "3" -> { // delete frozen product
-                        System.out.println(ansi().bold().fg(Ansi.Color.CYAN).a("--- DELETE FROZEN PRODUCT ---").reset());
-                        System.out.println("""
-                        1. By ID
-                        2. By Name
-                        """);
-                        String delChoice = scanner.nextLine();
-                        
-                        int idToDelete = -1;
-                        
-                        if (delChoice.equals("1")) {
-                            idToDelete = readInt("Enter ID to delete: ");
-                        } else if (delChoice.equals("2")) {
-                            String nameToDelete = readString("Enter Name to delete: ");
-                            idToDelete = productService.getAllProducts().stream()
-                                    .filter(p -> p.name().equalsIgnoreCase(nameToDelete))
-                                    .map(Product::productId)
-                                    .findFirst().orElse(-1);
-                        }
-
-                        if (idToDelete != -1) {
-                            productService.deleteProduct(idToDelete);
-                            System.out.println(ansi().fgGreen().a("Deleted successfully").reset());
-                        } else {
-                            System.out.println(ansi().fgRed().a("Product not found.").reset());
-                        }
-                    }
+                    /**
+                     * {@link AbstractProductMenu}
+                     */
+                    case "3" -> handleDeleteProduct(productService, FrozenProduct.class); // delete frozen product
 
                     case "4" -> { // update frozen product
-                        System.out.println(ansi().bold().fg(Ansi.Color.CYAN).a("--- UPDATE FROZEN PRODUCT ---").reset());
-                        System.out.println("""
-                        Find by:
-                        1. ID
-                        2. Name
-                        """);
-                        String searchType = scanner.nextLine();
+                        System.out.println(ansi().bold().fgCyan().a("--- UPDATE FROZEN PRODUCT ---").reset());
 
-                        Optional<Product> found = (searchType.equals("1")) 
-                            ? productService.findById(readInt("Enter ID: ")) 
-                            : productService.findByName(readString("Enter Name: "));
-
-                        if (found.isPresent() && found.get() instanceof FrozenProduct frozen) {
+                        /**
+                         * {@link AbstractProductMenu}
+                         */
+                        findProductForUpdate(productService, FrozenProduct.class).ifPresentOrElse(frozen -> {
                             System.out.println(ansi().fgYellow().bold().a("Editing: ").reset().a(frozen.name()));
-                            System.out.println("""
-                            1. Name
-                            2. Price
-                            3. Qty
-                            4. Temp
-                            5. Category
-                            """);
+                            System.out.println("1. Name | 2. Price | 3. Qty | 4. Temp | 5. Category");
                             String field = scanner.nextLine();
 
-                            Product updated = switch (field) {
-                                case "1" -> BaseFrozenProduct.copyOf(frozen).withName(readString("New Name: "));
-                                case "2" -> BaseFrozenProduct.copyOf(frozen).withUnitPrice(readBigDecimal("New Price: "));
-                                case "3" -> BaseFrozenProduct.copyOf(frozen).withQuantity(readDouble("New Quantity: "));
-                                case "4" -> BaseFrozenProduct.copyOf(frozen).withStorageTemp(readInt("New Temp: "));
-                                case "5" -> BaseFrozenProduct.copyOf(frozen).withCategory(readString("New Category: "));
-                                default -> frozen;
-                            };
-
-                            productService.updateProduct(updated);
-                            System.out.println(ansi().fgGreen().a("Updated successfully").reset());
-                        } else {
-                            System.out.println(ansi().fgRed().a("Product not found!").reset());
-                        }
+                            try {
+                                Product updated = switch (field) {
+                                    case "1" -> BaseFrozenProduct.copyOf(frozen).withName(readString("New Name: "));
+                                    case "2" -> BaseFrozenProduct.copyOf(frozen).withUnitPrice(readBigDecimal("New Price: "));
+                                    case "3" -> BaseFrozenProduct.copyOf(frozen).withQuantity(readDouble("New Quantity: "));
+                                    case "4" -> BaseFrozenProduct.copyOf(frozen).withStorageTemp(readInt("New Temp: "));
+                                    case "5" -> BaseFrozenProduct.copyOf(frozen).withCategory(readString("New Category: "));
+                                    default -> frozen;
+                                };
+                                
+                                productService.updateProduct(updated);
+                                System.out.println(ansi().fgGreen().a("Updated successfully!").reset());
+                            } catch (InvalidInputException e) {
+                                System.out.println(ansi().fgRed().a(e.getMessage()).reset());
+                            }
+                        }, () -> System.out.println(ansi().fgRed().a("Frozen product not found!").reset()));
                     }
                     case "0" -> back = true;
                 }

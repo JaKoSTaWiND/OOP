@@ -13,11 +13,9 @@ import exceptions.InvalidSettersException;
 import interfaces.Menu;
 import interfaces.product.IProductService;
 import ui.TableRenderer;
-import ui.menus.BaseMenu;
 
 @Component
-public class SimpleProductMenu extends BaseMenu implements Menu {
-    private final IProductService productService;
+public class SimpleProductMenu extends AbstractProductMenu implements Menu {
     private final Menu freshProductMenu;
     private final Menu frozenProductMenu;
 
@@ -27,8 +25,7 @@ public class SimpleProductMenu extends BaseMenu implements Menu {
             @Lazy Menu frozenProductMenu,
             Scanner scanner
         ) {
-        super(scanner);
-        this.productService = productService;
+        super(scanner, productService);
         this.freshProductMenu = freshProductMenu;
         this.frozenProductMenu = frozenProductMenu;
     }

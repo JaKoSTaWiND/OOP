@@ -17,6 +17,24 @@ import models.productModels.FreshProduct;
 import models.productModels.FrozenProduct;
 import models.productModels.Product;
 
+/**
+ * Core implementation of the {@link IProductService} interface.
+ * <p>
+ * This service provides business logic for managing various types of products, 
+ * including CRUD operations, tax calculations, and discount applications. 
+ * It acts as a bridge between the UI menus and the {@link IProductRepository}.
+ * </p>
+ * Key features include:
+ * <ul>
+ * <li>Type-safe product filtering.</li>
+ * <li>Transactional updates for price modifications (VAT and Discounts).</li>
+ * <li>Validation logic to prevent duplicate IDs or invalid inputs.</li>
+ * </ul>
+ * </p>
+ * 
+ * @see IProductService
+ * @see IProductRepository
+ */
 @Service
 public class ProductService implements IProductService {
     
@@ -26,11 +44,23 @@ public class ProductService implements IProductService {
         this.repository = repository;
     }
 
+    /**
+     * Finds a product by its unique identifier.
+     * 
+     * @param id the unique ID of the product.
+     * @return an {@link Optional} containing the product if found, or empty otherwise.
+     */
     @Override
     public Optional<Product> findById(int id) {
         return repository.findById(id);
     }
 
+    /**
+     * Finds a product by its name.
+     * 
+     * @param name the name of the product.
+     * @return an {@link Optional} containing the product if found, or empty otherwise.
+     */
     @Override
     public Optional<Product> findByName(String name) {
         if (name == null || name.isBlank()) {
@@ -44,6 +74,12 @@ public class ProductService implements IProductService {
         return repository.getAllProducts();
     }
 
+    /**
+     * Adds a new product to the system.
+     * 
+     * @param product the product entity to persist.
+     * @throws InvalidSettersException if a product with the same ID already exists.
+     */
     @Override
     public void addProduct(Product product) {
         if (repository.findById(product.productId()).isPresent()) {
@@ -74,7 +110,17 @@ public class ProductService implements IProductService {
         repository.update(product);
     }
 
-    // --- APPLY DISCOUNT ---
+    /**
+     * Applies a percentage discount to a product's unit price.
+     * <p>
+     * This method creates a copy of the existing product with the adjusted price 
+     * and sets the {@code isDiscounted} flag to true. The calculation uses 
+     * {@link RoundingMode#HALF_UP} for precision.
+     * </p>
+     * 
+     * @param productId  the ID of the product to modify.
+     * @param percentage the discount percentage (e.g., 10.0 for 10%).
+     */
     @Override
     @Transactional
     public void applyDiscount(int productId, double percentage) {
@@ -101,7 +147,12 @@ public class ProductService implements IProductService {
         repository.update(updatedProduct);
     }
 
-    // --- CALCULATE PRICE WITH VAT ---
+    /**
+     * Adjusts the product price by adding Value Added Tax (VAT).
+     * 
+     * @param productId the ID of the product to modify.
+     * @param vatRate   the tax rate as a decimal (e.g., 0.2 for 20% VAT).
+     */
     @Override
     @Transactional
     public void calculatePriceWithVAT(int productId, double vatRate) {
@@ -122,6 +173,12 @@ public class ProductService implements IProductService {
         repository.update(updatedProduct);
     }
 
+    /**
+     * Filters all existing products by their specific class type.
+     * 
+     * @param type the class type to filter by (e.g., {@code FreshProduct.class}).
+     * @return a list of products that are instances of the specified type.
+     */
     @Override
     public List<Product> getProductsByType(Class<? extends Product> type) {
         return repository.getAllProducts().stream()

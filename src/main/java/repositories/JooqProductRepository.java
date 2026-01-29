@@ -31,6 +31,18 @@ public class JooqProductRepository implements IProductRepository {
                 .map(this::mapRecordToProduct);
     }
 
+    /**
+     * Searches a product from the database by its primary key.
+     * <p>
+     * This method executes a {@code SELECT} query using jOOQ's DSL context 
+     * and attempts to map the resulting record to a concrete {@link Product} 
+     * implementation using {@link #mapRecordToProduct(Record)}.
+     * </p>
+     *
+     * @param id the unique identifier of the product in the database.
+     * @return an {@link Optional} containing the mapped product if found, 
+     * or {@link Optional#empty()} if no record matches the ID.
+     */
     @Override
     public Optional<Product> findById(int id) {
         return dsl.selectFrom(PRODUCTS)
@@ -39,6 +51,17 @@ public class JooqProductRepository implements IProductRepository {
                 .map(this::mapRecordToProduct);
     }
 
+    /**
+     * Searches for a product by its name using a case-insensitive comparison.
+     * <p>
+     * Uses the SQL {@code LOWER} or {@code UPPER} function (via {@code equalIgnoreCase}) 
+     * to ensure that searches like "Apple", "apple", and "APPLE" all return the same result.
+     * </p>
+     *
+     * @param name the name of the product to search for.
+     * @return an {@link Optional} containing the found product, or empty if the name 
+     * does not exist in the database.
+     */
     @Override
     public Optional<Product> findByName(String name) {
         return dsl.selectFrom(PRODUCTS)
@@ -48,12 +71,17 @@ public class JooqProductRepository implements IProductRepository {
     }
 
     /**
-    * Use for saving products in the database by
-    * checking product type by instanceof and setting
-    * product_type_id = 1 for FreshProduct and 2 for FrozenProduct
-    * then mapping values from object to columns by:
-    * .set(PRODUCTS.COLUMN, product.getField());
-    */
+     * Persists a new product record into the {@code PRODUCTS} table.
+     * <p>
+     * This method maps common {@link Product} attributes to database columns. 
+     * It uses a simple type-mapping strategy where {@code FreshProduct} is assigned 
+     * type ID {@code 1} and {@code FrozenProduct} is assigned type ID {@code 2}.
+     * Special fields like {@code storageTemp} are handled conditionally based on 
+     * the concrete instance type.
+     * </p>
+     *
+     * @param product the product instance to be saved.
+     */
     @Override
     public void save(Product product) {
         if (product == null) {
@@ -74,10 +102,15 @@ public class JooqProductRepository implements IProductRepository {
 
 
     /**
-     * Use for updating products in the database by
-     * setting updateStep all columns and finding product by Id
-     * then update value in chosen column by .PRODUCTS.COLUMN(value) = newValue
-     * and for all unchanged columns -> PRODUCTS.COLUMN(value) = value
+     * Updates an existing product record in the {@code PRODUCTS} table.
+     * <p>
+     * This method builds a dynamic SQL {@code UPDATE} statement. It always updates 
+     * common fields (name, price, quantity, category, and discount status). 
+     * If the product is an instance of {@link FrozenProduct}, it also updates 
+     * the {@code storageTemp}; otherwise, it ensures the temperature field is set to {@code null}.
+     * </p>
+     *
+     * @param product the product instance containing the updated data.
      */
     @Override
     public void update(Product product) {
@@ -102,6 +135,15 @@ public class JooqProductRepository implements IProductRepository {
         }
     }
 
+    /**
+     * Removes a product record from the {@code PRODUCTS} table by its unique ID.
+     * <p>
+     * This operation is permanent. If no record exists with the provided ID, 
+     * the method completes successfully without making any changes to the database.
+     * </p>
+     *
+     * @param id the primary key of the product to be deleted.
+     */
     @Override
     public void delete(int id) {
         dsl.deleteFrom(PRODUCTS)
@@ -110,11 +152,17 @@ public class JooqProductRepository implements IProductRepository {
     }
 
     /**
-     * Use for searching products by getting Optional<Product> from query
-     * and creating objects by ProductFactory based on @code product_type_id,
-     * where 1 = FreshProduct and 2 = FrozenProduct.
-     * mapping values from record to object fields by:
-     * .map(this::mapRecordToProduct);
+     * Maps a jOOQ {@link ProductsRecord} to a concrete {@link Product} implementation.
+     * <p>
+     * This internal helper method interprets the {@code PRODUCT_TYPE_ID} column to 
+     * determine which factory method to invoke. It performs necessary type conversions, 
+     * such as converting {@link BigDecimal} quantities to {@code double} and 
+     * handling nullable {@code storageTemp} values for frozen goods.
+     * </p>
+     *
+     * @param record the database record containing product data.
+     * @return a concrete instance of {@link FreshProduct} (Type 1) or {@link FrozenProduct} (Type 2).
+     * @see ProductFactory
      */
     private Product mapRecordToProduct(ProductsRecord record) {
         return switch (record.getProductTypeId()) {

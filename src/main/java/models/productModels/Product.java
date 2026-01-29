@@ -9,11 +9,6 @@ import models.ImmutableStyle;
 
 @ImmutableStyle
 public abstract class Product {
-    // protected int productId;
-    // protected String name;
-    // protected BigDecimal unitPrice;
-    // protected boolean isDiscounted;
-    // protected String category;
 
     public abstract int productId();
     public abstract String name();
@@ -69,4 +64,3 @@ public abstract class Product {
     return "No defrosting needed.";
     }
 }
-

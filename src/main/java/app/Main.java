@@ -34,15 +34,40 @@ public class Main implements CommandLineRunner {
         SpringApplication.run(Main.class, args);
     }
 
+    /**
+     * <h2>Project Data Flow & Architecture</h2>
+     * <p>
+     * The system follows a <b>Layered Architecture</b> pattern, ensuring a clean 
+     * separation of concerns between user interaction and data persistence:
+     * </p>
+     * <ol>
+     * <li>
+     * <b>Database Layer (PostgreSQL)</b>: 
+     * The primary storage containing product tables, types, and constraints.
+     * </li>
+     * <li>
+     * <b>Data Access Layer (jOOQ Repository)</b>: 
+     * Handles raw SQL execution through type-safe DSL queries. It is responsible 
+     * for mapping database {@code Records} into the domain's objects.
+     * </li>
+     * <li>
+     * <b>Service Layer (Business Logic)</b>: 
+     * Acts as a mediator between the UI and Repository. This layer performs 
+     * calculations (VAT, Discounts), validation, and manages transactions.
+     * </li>
+     * <li>
+     * <b>Presentation Layer (Console UI)</b>: 
+     * The entry point for the user. It manages terminal output, processes 
+     * {@link java.util.Scanner} inputs, and routes user commands to the appropriate services.
+     * </li>
+     * </ol>
+     *
+     * <pre>
+     * [UI] <---> [Services] <---> [Repository] <---> [Database]
+     * </pre>
+     */
     @Override
     public void run(String... args) {
-        /**
-         * database ->
-         * repository (jooq) | used for SQL queries -> 
-         * services | logic for console input and classes methods ->
-         * ui | output to console data and get inputs from user
-         */
-
         Menu mainMenu = context.getBean(StoreMenu.class);
         mainMenu.run();
     }
