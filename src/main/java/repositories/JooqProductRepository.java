@@ -174,6 +174,46 @@ public class JooqProductRepository implements IProductRepository {
     }
 
     /**
+     * Performs a fuzzy search for products by name using a case-insensitive pattern.
+     * <p>
+     * Utilizes the {@code containsIgnoreCase} operator, which translates to a SQL 
+     * {@code LIKE '%name%'} clause. This allows users to find products without 
+     * knowing the exact full title, enhancing the search experience in the UI.
+     * </p>
+     *
+     * @param name the substring to search for within product names.
+     * @return a {@link List} of {@link Product} domain objects matching the pattern.
+     */
+    @Override
+    public List<Product> findByNameLike(String name) {
+        return dsl.selectFrom(PRODUCTS)
+                .where(PRODUCTS.NAME.containsIgnoreCase(name))
+                .fetch()
+                .map(this::mapRecordToProduct);
+    }
+
+    /**
+     * Retrieves products filtered by a specific unit price interval.
+     * <p>
+     * Leverages the SQL {@code BETWEEN} operator to efficiently fetch records 
+     * where the {@code UNIT_PRICE} column falls within the inclusive range [min, max].
+     * The resulting records are automatically mapped to their respective concrete 
+     * product implementations.
+     * </p>
+     *
+     * @param min the lower bound of the price range (inclusive).
+     * @param max the upper bound of the price range (inclusive).
+     * @return a {@link List} of {@link Product} objects within the specified budget.
+     */
+    @Override
+    public List<Product> findByPriceRange(BigDecimal min, BigDecimal max) {
+        return dsl.selectFrom(PRODUCTS)
+                .where(PRODUCTS.UNITPRICE.between(min, max))
+                .fetch()
+                .map(this::mapRecordToProduct);
+    }
+
+    /**
      * Maps a jOOQ {@link ProductsRecord} to a concrete {@link Product} implementation.
      * <p>
      * This internal helper method interprets the {@code PRODUCT_TYPE_ID} column to 
@@ -188,7 +228,7 @@ public class JooqProductRepository implements IProductRepository {
      */
     private Product mapRecordToProduct(ProductsRecord record) {
         return switch (record.getProductTypeId()) {
-            case 1 -> ProductFactory.createFreshProduct(
+            case 1 -> ProductFactory.createFreshProduct( // FreshProduct
                         record.getId(),
                         record.getName(),
                         record.getUnitprice(),
@@ -197,7 +237,7 @@ public class JooqProductRepository implements IProductRepository {
                         record.getIsdiscontinued()
                     );
 
-            case 2 -> ProductFactory.createFrozenProduct(
+            case 2 -> ProductFactory.createFrozenProduct( // FrozenProduct
                         record.getId(),
                         record.getName(),
                         record.getUnitprice(),

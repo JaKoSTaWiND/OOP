@@ -75,6 +75,40 @@ public class ProductService implements IProductService {
     }
 
     /**
+     * Searches for products by a partial name match, ignoring case.
+     * 
+     * @param name the fragment of the name to search for.
+     * @return a list of products containing the fragment.
+     */
+    @Override
+    public List<Product> findByNameLike(String name) {
+        if (name == null || name.isBlank()) {
+            return List.of(); // Если строка пустая, возвращаем пустой список без запроса к БД
+        }
+        return repository.findByNameLike(name);
+    }
+
+    /**
+     * Filters products within a specified price range.
+     * 
+     * @param min the minimum unit price.
+     * @param max the maximum unit price.
+     * @return a list of products within the [min, max] range.
+     */
+    @Override
+    public List<Product> findByPriceRange(BigDecimal min, BigDecimal max) {
+        if (min == null || max == null) {
+            throw new InvalidSettersException("Price boundaries cannot be null.");
+        }
+        
+        if (min.compareTo(max) > 0) {
+            throw new InvalidSettersException("Minimum price (" + min + ") cannot be greater than maximum price (" + max + ").");
+        }
+        
+        return repository.findByPriceRange(min, max);
+    }
+
+    /**
      * Adds a new product to the system.
      * 
      * @param product the product entity to persist.

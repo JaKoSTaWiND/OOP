@@ -20,4 +20,11 @@ public class CustomerFactory {
                 .isVip(isVip)
                 .build();
     }
+
+    public static Customer createCustomer(
+            String fullName,
+            String phone
+        ) {
+        return createCustomer(0, fullName, phone, 0, false);
+    }
 }

@@ -1,5 +1,7 @@
 package ui.menus.productMenus;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Scanner;
 
 import org.fusesource.jansi.Ansi;
@@ -12,6 +14,7 @@ import exceptions.InvalidInputException;
 import exceptions.InvalidSettersException;
 import interfaces.Menu;
 import interfaces.product.IProductService;
+import models.productModels.Product;
 import ui.TableRenderer;
 
 @Component
@@ -37,6 +40,8 @@ public class SimpleProductMenu extends AbstractProductMenu implements Menu {
             1. List All Products
             2. Apply Discount
             3. Calculate Price With VAT (НДС)
+            4. Search by Name (LIKE%)
+            5. Search by price (BETWEEN)
 
             8. Fresh Product Management ->
             9. Frozen Product Management ->
@@ -65,6 +70,32 @@ public class SimpleProductMenu extends AbstractProductMenu implements Menu {
                         double vatRate = readDouble("Enter VAT rate (0.2 for 20%):");
                         productService.calculatePriceWithVAT(id, vatRate);
                         System.out.println(ansi().fgGreen().a("Price with VAT calculated successfully.").reset());
+                    }
+                    case "4" -> {
+                        String fragment = readString("Enter product name or part of it: ");
+                        List<Product> results = productService.findByNameLike(fragment);
+                        
+                        if (results.isEmpty()) {
+                            System.out.println(ansi().fgRed().a("No products found matching: " + fragment).reset());
+                        } else {
+                            TableRenderer.printProductTable(results);
+                        }
+                    }
+                    
+                    case "5" -> {
+                        BigDecimal min = readBigDecimal("Enter minimum price: ");
+                        BigDecimal max = readBigDecimal("Enter maximum price: ");
+                        
+                        try {
+                            List<Product> results = productService.findByPriceRange(min, max);
+                            if (results.isEmpty()) {
+                                System.out.println(ansi().fgRed().a("No products found in this price range.").reset());
+                            } else {
+                                TableRenderer.printProductTable(results);
+                            }
+                        } catch (InvalidSettersException e) {
+                            System.out.println(ansi().fgRed().a(e.getMessage()).reset());
+                        }
                     }
 
                     case "8" -> freshProductMenu.run();
